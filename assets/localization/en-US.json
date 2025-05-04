@@ -1,0 +1,16 @@
+{
+    "welcomMessage": "Hello! Register to get started",
+    "userName": "User name",
+    "email": "Email",
+    "password": "Password",
+    "confirmPassword": "Confirm Password",
+    "register": "Register",
+    "login": "Login",
+    "orLoginWith": "Or login with",
+    "alreadyHaveAcc":"Already have an account ? ",
+     "loginNow":"Login Now ",
+     "donnotHaveAcc":"Don't have account ?",
+     "registerNow":"Register Now ",
+     "creatAcc": "Register",
+        "role":"Role"
+}

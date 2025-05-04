@@ -1,0 +1,18 @@
+{
+    "welcomMessage": "مرحبًا! سجل للبدء",
+    "userName": "اسم المستخدم",
+    "email": "البريد الإلكتروني",
+    "password": "كلمة المرور",
+    "confirmPassword": "تأكيد كلمة المرور",
+    "register": "تسجيل",
+    "creatAcc": "انشاء حساب جديد",
+    "login": "تسجيل الدخول",
+    "orLoginWith": "أو سجل الدخول بواسطة",
+    "alreadyHaveAcc": "هل لديك حساب بالفعل؟",
+    "loginNow": "سجل الدخول الآن",
+    "donnotHaveAcc": "ليس لديك حساب؟",
+    "registerNow": "سجل الآن",
+     "role":"الدور"
+
+     
+}
