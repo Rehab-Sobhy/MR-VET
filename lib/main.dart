@@ -1,9 +1,6 @@
-import 'package:education_app/auth/choooseRoleToAuth.dart';
-import 'package:education_app/auth/forgetPass.dart/forgetScreen.dart';
-import 'package:education_app/auth/login/login_screen.dart';
-import 'package:education_app/auth/register/register.dart';
-import 'package:education_app/homeScreen/homeScreen.dart';
-import 'package:education_app/student/studentHomeScreen.dart';
+import 'package:education_app/instructor/addCourse.dart';
+import 'package:education_app/instructor/coursesCubit.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -12,7 +9,6 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:education_app/auth/login/login_cubit.dart';
-import 'package:education_app/splash.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -48,6 +44,7 @@ class MyApp extends StatelessWidget {
     return MultiBlocProvider(
       providers: [
         BlocProvider(create: (context) => LoginCubit()),
+        BlocProvider(create: (context) => CoursesCubit()),
       ],
       child: ScreenUtilInit(
         designSize: const Size(360, 690),
@@ -58,7 +55,7 @@ class MyApp extends StatelessWidget {
           localizationsDelegates: context.localizationDelegates,
           supportedLocales: context.supportedLocales,
           locale: context.locale,
-          home: StudentHomeScreen(),
+          home: AddCourseScreen(),
         ),
       ),
     );

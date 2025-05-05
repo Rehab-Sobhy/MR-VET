@@ -1,4 +1,5 @@
 import 'package:easy_localization/easy_localization.dart';
+import 'package:education_app/auth/choooseRoleToAuth.dart';
 import 'package:education_app/auth/login/login_cubit.dart';
 import 'package:education_app/auth/login/login_states.dart';
 import 'package:education_app/auth/register/registerScreen.dart';
@@ -171,7 +172,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => const RegisterScreen()),
+                                builder: (context) => const ChooseRole()),
                           );
                         },
                         child: Text(
