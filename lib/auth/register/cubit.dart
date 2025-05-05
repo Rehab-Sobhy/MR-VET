@@ -95,7 +95,7 @@ class RegisterCubit extends Cubit<RegisterState> {
     if (registerModel.name.trim().isEmpty ||
         registerModel.email.trim().isEmpty ||
         registerModel.password.trim().isEmpty) {
-      final errorMsg = '❌ كل الحقول مطلوبة';
+      final errorMsg = ' كل الحقول مطلوبة';
       emit(RegisterFailed(errMessage: errorMsg));
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text(errorMsg)),
@@ -109,7 +109,7 @@ class RegisterCubit extends Cubit<RegisterState> {
       final data = {
         "email": registerModel.email.trim(),
         "name": registerModel.name.trim(),
-        "role": "admin",
+        "role": registerModel.role,
         "password": registerModel.password.trim(),
       };
 

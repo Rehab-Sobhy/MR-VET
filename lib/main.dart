@@ -1,7 +1,9 @@
+import 'package:education_app/auth/choooseRoleToAuth.dart';
 import 'package:education_app/auth/forgetPass.dart/forgetScreen.dart';
 import 'package:education_app/auth/login/login_screen.dart';
 import 'package:education_app/auth/register/register.dart';
 import 'package:education_app/homeScreen/homeScreen.dart';
+import 'package:education_app/student/studentHomeScreen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -56,7 +58,7 @@ class MyApp extends StatelessWidget {
           localizationsDelegates: context.localizationDelegates,
           supportedLocales: context.supportedLocales,
           locale: context.locale,
-          home: Homescreen(),
+          home: StudentHomeScreen(),
         ),
       ),
     );
