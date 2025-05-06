@@ -1,3 +1,6 @@
+import 'package:education_app/auth/choooseRoleToAuth.dart';
+import 'package:education_app/auth/login/login_screen.dart';
+import 'package:education_app/auth/register/register.dart';
 import 'package:education_app/instructor/addCourse.dart';
 import 'package:education_app/instructor/coursesCubit.dart';
 
@@ -55,7 +58,7 @@ class MyApp extends StatelessWidget {
           localizationsDelegates: context.localizationDelegates,
           supportedLocales: context.supportedLocales,
           locale: context.locale,
-          home: AddCourseScreen(),
+          home: ChooseRole(),
         ),
       ),
     );

@@ -2,7 +2,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:education_app/auth/choooseRoleToAuth.dart';
 import 'package:education_app/auth/login/login_cubit.dart';
 import 'package:education_app/auth/login/login_states.dart';
-import 'package:education_app/auth/register/registerScreen.dart';
+
 import 'package:education_app/homeScreen/homeScreen.dart';
 import 'package:education_app/resources/colors.dart';
 import 'package:education_app/resources/widgets/custom_texr_field.dart';

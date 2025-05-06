@@ -14,7 +14,8 @@ import 'package:gap/gap.dart';
 import 'package:image_picker/image_picker.dart';
 
 class RegisterScreen extends StatefulWidget {
-  const RegisterScreen({Key? key}) : super(key: key);
+  String role;
+  RegisterScreen({Key? key, required this.role}) : super(key: key);
 
   @override
   State<RegisterScreen> createState() => _RegisterScreenState();
@@ -131,12 +132,12 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         : MainButton(
                             onTap: () {
                               registerModel.name = nameController.text;
-                              registerModel.role = roleController.text;
+                              registerModel.role = widget.role;
                               registerModel.email = emailController.text;
 
                               registerModel.password = passwordController.text;
 
-                              registerModel.image = selectedImage;
+                              registerModel.profileImage = selectedImage;
 
                               if (registerModel.name!.isEmpty ||
                                   registerModel.email!.isEmpty ||

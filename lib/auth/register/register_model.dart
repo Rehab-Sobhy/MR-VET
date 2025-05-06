@@ -6,6 +6,6 @@ class RegisterModel extends ChangeNotifier {
   dynamic password;
   dynamic name;
   dynamic role;
-  dynamic image;
+  dynamic profileImage;
   dynamic password_confirmation;
 }
