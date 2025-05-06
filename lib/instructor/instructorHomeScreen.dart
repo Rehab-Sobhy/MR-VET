@@ -23,7 +23,7 @@ class _InsHomeScreenState extends State<InsHomeScreen> {
 
   final List<Widget> _screens = [
     StudentHomeScreen(),
-    NotificationsScreen(),
+    NotificationScreen(),
     CoursesScreen(),
     SettingsScreen(),
   ];

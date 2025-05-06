@@ -1,10 +1,7 @@
 import 'package:education_app/auth/register/register.dart';
 import 'package:education_app/auth/register/register_model.dart';
-import 'package:education_app/resources/colors.dart';
-import 'package:education_app/resources/widgets/mainButton.dart';
-import 'package:flutter/foundation.dart';
+
 import 'package:flutter/material.dart';
-import 'package:gap/gap.dart';
 
 class ChooseRole extends StatefulWidget {
   const ChooseRole({super.key});
@@ -24,44 +21,104 @@ class _ChooseRoleState extends State<ChooseRole> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            MainButton(
-              backGroundColor: primaryColor,
-              textColor: Colors.white,
-              text: "Admin",
-              onTap: () {
-                role = "admin";
-                registerModel.role = "admin";
-              },
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
+                "هل أنت طالب أم معلم؟",
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              ),
             ),
-            Gap(20),
-            MainButton(
-              backGroundColor: primaryColor,
-              textColor: Colors.white,
-              text: "Student",
-              onTap: () {
-                role = "student";
-                registerModel.role = "student";
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => RegisterScreen(
-                              role: role!,
-                            )));
-              },
-            ),
-            Gap(20),
-            MainButton(
-              backGroundColor: primaryColor,
-              textColor: Colors.white,
-              text: "Instructor",
-              onTap: () {
-                role = "instructor";
-                registerModel.role = "instructor";
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => RegisterScreen(role: role!)));
-              },
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                InkWell(
+                  onTap: () {
+                    role = "instructor";
+                    registerModel.role = "instructor";
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => RegisterScreen(
+                                  role: role!,
+                                )));
+                  },
+                  child: Container(
+                    padding: EdgeInsets.all(8),
+                    width: 150,
+                    margin: const EdgeInsets.all(16),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(12),
+                      border:
+                          Border.all(color: Colors.grey), // Light grey border
+                    ),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        ClipRRect(
+                          borderRadius: const BorderRadius.vertical(
+                              top: Radius.circular(12)),
+                          child: Image.asset(
+                            'assets/images/user_11144615.png',
+                            height: 50,
+                          ),
+                        ),
+                        const Padding(
+                          padding: EdgeInsets.all(12.0),
+                          child: Text(
+                            'instructor',
+                            style: TextStyle(
+                                fontSize: 16, fontWeight: FontWeight.bold),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                InkWell(
+                  onTap: () {
+                    role = "student";
+                    registerModel.role = "student";
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => RegisterScreen(
+                                  role: role!,
+                                )));
+                  },
+                  child: Container(
+                    padding: EdgeInsets.all(8),
+                    width: 150,
+                    margin: const EdgeInsets.all(16),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(12),
+                      border: Border.all(color: Colors.grey),
+                    ),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        ClipRRect(
+                          borderRadius: const BorderRadius.vertical(
+                              top: Radius.circular(12)),
+                          child: Image.asset(
+                            'assets/images/user_11144615.png',
+                            height: 50,
+                          ),
+                        ),
+                        const Padding(
+                          padding: EdgeInsets.all(12.0),
+                          child: Text(
+                            'student',
+                            style: TextStyle(
+                                fontSize: 16, fontWeight: FontWeight.bold),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
             ),
           ],
         ),

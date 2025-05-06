@@ -23,7 +23,7 @@ class _BottomBarScreenState extends State<BottomBarScreen> {
 
   final List<Widget> _screens = [
     StudentHomeScreen(),
-    NotificationsScreen(),
+    NotificationScreen(),
     CoursesScreen(),
     SettingsScreen(),
   ];
