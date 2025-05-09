@@ -14,7 +14,7 @@ class LoginCubit extends Cubit<LoginState> {
       print("Logging in...");
 
       final response = await Dio().post(
-        "https://edubackendapp-production.up.railway.app/api/auth/login",
+        "https://e-learinng-production.up.railway.app/api/auth/login",
         data: jsonEncode({
           "email": email,
           "password": password,
@@ -47,6 +47,7 @@ class LoginCubit extends Cubit<LoginState> {
   Future<void> _saveToken(String token) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.setString("auth_token", token);
+
     await prefs.setBool("isLoggedIn", true);
     print("Token saved successfully");
   }

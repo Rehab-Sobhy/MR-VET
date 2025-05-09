@@ -31,9 +31,13 @@ class _RegisterScreenState extends State<RegisterScreen> {
   TextEditingController passwordController = TextEditingController();
 
   RegisterModel registerModel = RegisterModel();
-  File? selectedImage;
 
+  dynamic selectedImage;
   XFile? _image;
+
+  dynamic selectedCollegeIdImage;
+  XFile? _collegeIdImage;
+
   Future<void> pickImage() async {
     final ImagePicker picker = ImagePicker();
     try {
@@ -46,6 +50,21 @@ class _RegisterScreenState extends State<RegisterScreen> {
       });
     } catch (e) {
       print("Image picking error: $e");
+    }
+  }
+
+  Future<void> pickCollegeIdImage() async {
+    final ImagePicker picker = ImagePicker();
+    try {
+      final pickedFile = await picker.pickImage(source: ImageSource.gallery);
+      setState(() {
+        _collegeIdImage = pickedFile;
+        if (_collegeIdImage != null) {
+          selectedCollegeIdImage = File(_collegeIdImage!.path);
+        }
+      });
+    } catch (e) {
+      print("College ID picking error: $e");
     }
   }
 
@@ -72,8 +91,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       content: Text("registrationSuccessful".tr()),
                     ),
                   );
-                  Navigator.pushReplacement(context,
-                      MaterialPageRoute(builder: (context) => LoginScreen()));
+                  Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(builder: (context) => LoginScreen()),
+                  );
                 } else if (state is RegisterFailed) {
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(content: Text("errorTryAgain".tr())),
@@ -84,12 +105,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 return Column(
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
-                    // Center(
-                    //   child: Image.asset(
-                    //     width: 220,
-                    //     "assets/images/logo1.png",
-                    //   ),
-                    // ),
                     const Gap(50),
                     Text(
                       "creatAccount".tr(),
@@ -102,7 +117,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     const Gap(10),
                     _buildTextField("${"userName".tr()} *", nameController),
                     const Gap(10),
-
                     _buildTextField("${"email".tr()} *", emailController),
                     const Gap(10),
                     _buildTextField("${"password".tr()} *", passwordController),
@@ -126,6 +140,29 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         onTap: pickImage,
                       ),
                     ),
+                    const Gap(20),
+
+                    /// College ID Image
+                    if (selectedCollegeIdImage != null)
+                      Center(
+                        child: Image.file(
+                          selectedCollegeIdImage!,
+                          width: 100,
+                          height: 100,
+                          fit: BoxFit.cover,
+                        ),
+                      ),
+                    const Gap(10),
+                    Center(
+                      child: MainButton(
+                        backGroundColor: primaryColor,
+                        textColor: Colors.white,
+                        text: "chooseCollegeId"
+                            .tr(), // add this to your translation file
+                        onTap: pickCollegeIdImage,
+                      ),
+                    ),
+
                     const Gap(15),
                     state is RegisterLoading
                         ? Center(child: CircularProgressIndicator())
@@ -134,14 +171,14 @@ class _RegisterScreenState extends State<RegisterScreen> {
                               registerModel.name = nameController.text;
                               registerModel.role = widget.role;
                               registerModel.email = emailController.text;
-
                               registerModel.password = passwordController.text;
-
                               registerModel.profileImage = selectedImage;
+                              registerModel.collegeId = selectedCollegeIdImage;
 
                               if (registerModel.name!.isEmpty ||
                                   registerModel.email!.isEmpty ||
-                                  registerModel.password!.isEmpty) {
+                                  registerModel.password!.isEmpty ||
+                                  registerModel.collegeId == null) {
                                 ScaffoldMessenger.of(context).showSnackBar(
                                   SnackBar(
                                       content:
@@ -178,9 +215,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         InkWell(
                           onTap: () {
                             Navigator.pushReplacement(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => LoginScreen()));
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => LoginScreen(),
+                              ),
+                            );
                           },
                           child: Text(
                             "logIn".tr(),
@@ -192,7 +231,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         ),
                       ],
                     ),
-                    Gap(50),
+                    const Gap(50),
                   ],
                 );
               },

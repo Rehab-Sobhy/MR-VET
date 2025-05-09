@@ -2,6 +2,7 @@ import 'package:education_app/auth/forgetPass.dart/forgetScreen.dart';
 import 'package:education_app/auth/login/login_screen.dart';
 import 'package:education_app/bottomBarScreen.dart';
 import 'package:education_app/homeScreen/homeScreen.dart';
+import 'package:education_app/instructor/instructorHomeScreen.dart';
 import 'package:education_app/resources/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
@@ -61,7 +62,7 @@ class _SplashScreenState extends State<SplashScreen>
       // Navigate to HomeScreen if already logged in
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (context) => BottomBarScreen()),
+        MaterialPageRoute(builder: (context) => InsHomeScreen()),
       );
     } else if (hasSeenOnboarding) {
       Navigator.pushReplacement(

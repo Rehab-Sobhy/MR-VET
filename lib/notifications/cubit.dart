@@ -10,7 +10,7 @@ class NotificationCubit extends Cubit<NotificationState> {
     emit(NotificationLoading());
     try {
       final response = await Dio().get(
-          'https://edubackendapp-production.up.railway.app/api/notifications');
+          'https://e-learinng-production.up.railway.app/api/notifications');
       final List data = response.data;
 
       final notifications =

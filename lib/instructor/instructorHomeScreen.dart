@@ -1,3 +1,4 @@
+import 'package:education_app/instructor/addCourse.dart';
 import 'package:flutter/material.dart';
 
 // Screens
@@ -24,7 +25,7 @@ class _InsHomeScreenState extends State<InsHomeScreen> {
   final List<Widget> _screens = [
     StudentHomeScreen(),
     NotificationScreen(),
-    CoursesScreen(),
+    AddCourseScreen(),
     SettingsScreen(),
   ];
 

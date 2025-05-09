@@ -16,6 +16,8 @@ class CustomTextField extends StatelessWidget {
     this.fontsize = 12,
     this.hintText = "",
     this.onchange,
+    int maxLines = 1,
+    TextInputType keyboardType = TextInputType.text,
   });
 
   @override

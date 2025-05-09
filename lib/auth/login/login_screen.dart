@@ -4,6 +4,8 @@ import 'package:education_app/auth/login/login_cubit.dart';
 import 'package:education_app/auth/login/login_states.dart';
 
 import 'package:education_app/homeScreen/homeScreen.dart';
+
+import 'package:education_app/instructor/instructorHomeScreen.dart';
 import 'package:education_app/resources/colors.dart';
 import 'package:education_app/resources/widgets/custom_texr_field.dart';
 import 'package:education_app/resources/widgets/mainButton.dart';
@@ -127,7 +129,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         Navigator.pushReplacement(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => Homescreen()));
+                                builder: (context) => InsHomeScreen()));
                       }
                     },
                     builder: (context, state) {

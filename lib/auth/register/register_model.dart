@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 
 class RegisterModel extends ChangeNotifier {
@@ -6,6 +8,7 @@ class RegisterModel extends ChangeNotifier {
   dynamic password;
   dynamic name;
   dynamic role;
-  dynamic profileImage;
+  File? profileImage;
   dynamic password_confirmation;
+  File? collegeId;
 }
