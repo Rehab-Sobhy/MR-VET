@@ -3,7 +3,7 @@ import 'package:dio/dio.dart';
 import 'package:education_app/auth/login/login_screen.dart';
 import 'package:education_app/auth/register/register_model.dart';
 import 'package:education_app/auth/register/register_states.dart';
-import 'package:education_app/resources/apiKey.dart';
+import 'package:education_app/constants/apiKey.dart';
 import 'package:flutter/material.dart';
 import 'package:http_parser/http_parser.dart';
 import 'package:path/path.dart' as path;

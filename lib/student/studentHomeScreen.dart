@@ -1,7 +1,10 @@
 import 'package:easy_localization/easy_localization.dart';
-import 'package:education_app/auth/login/login_screen.dart';
-import 'package:flutter/foundation.dart';
+import 'package:education_app/constants/widgets/customAppBar.dart';
+import 'package:education_app/student/courseDescription.dart';
+import 'package:education_app/student/coursesCubit.dart';
+import 'package:education_app/student/courses_states.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
 
 class StudentHomeScreen extends StatefulWidget {
@@ -13,75 +16,177 @@ class StudentHomeScreen extends StatefulWidget {
 
 class _StudentHomeScreenState extends State<StudentHomeScreen> {
   @override
+  void initState() {
+    super.initState();
+    context.read<StudentCourseCubit>().fetchCourses();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text("MR VET"),
-      ),
       backgroundColor: Colors.white,
-      body: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Gap(40),
-            Row(
-              children: [
-                Text("instructors"),
-                Spacer(),
-                Text("showall".tr()),
-              ],
-            ),
-            SizedBox(
-              height: 130,
-              child: Expanded(
-                child: ListView.builder(
-                  scrollDirection: Axis.horizontal,
-                  itemCount: 10,
-                  itemBuilder: (BuildContext context, int index) {
-                    return Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Container(
-                        width: 130,
-                        height: 90,
-                        child: Card(
-                          child: Image.asset("assets/images/check2.jpg"),
-                        ),
-                      ),
-                    );
-                  },
+      body: BlocBuilder<StudentCourseCubit, CourseState>(
+        builder: (context, state) {
+          if (state is CourseLoading) {
+            return const Center(child: CircularProgressIndicator());
+          } else if (state is CourseError) {
+            return Center(child: Text(state.message));
+          } else if (state is CourseSuccess) {
+            final courses = state.courses;
+
+            return SingleChildScrollView(
+              physics: const AlwaysScrollableScrollPhysics(),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Gap(20),
+                  _buildSectionHeader("instructors", context),
+                  const Gap(8),
+                  _buildInstructorsList(),
+                  const Gap(20),
+                  _buildSectionHeader("courses", context),
+                  const Gap(8),
+                  _buildCoursesGrid(courses, context),
+                  const Gap(20),
+                ],
+              ),
+            );
+          }
+          return const Center(child: Text("No content available"));
+        },
+      ),
+    );
+  }
+
+  Widget _buildSectionHeader(String title, BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 8.0),
+      child: Row(
+        children: [
+          Text(
+            title,
+            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+          ),
+          const Spacer(),
+          Text(
+            "showall".tr(),
+            style: const TextStyle(color: Colors.blue),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildInstructorsList() {
+    return SizedBox(
+      height: 130,
+      child: ListView.builder(
+        scrollDirection: Axis.horizontal,
+        physics: const ClampingScrollPhysics(), // Smooth horizontal scrolling
+        itemCount: 10, // Replace with dynamic data if available
+        itemBuilder: (context, index) {
+          return Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 8.0),
+            child: SizedBox(
+              width: 130,
+              child: Card(
+                clipBehavior: Clip.antiAlias,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                child: Image.asset(
+                  "assets/images/check2.jpg",
+                  fit: BoxFit.cover,
                 ),
               ),
             ),
-            Row(
-              children: [
-                Text("courses"),
-                Spacer(),
-                Text("showall".tr()),
-              ],
-            ),
-            Expanded(
-              child: GridView.builder(
-                itemCount: 10,
-                itemBuilder: (BuildContext context, int index) {
-                  return Padding(
+          );
+        },
+      ),
+    );
+  }
+
+  Widget _buildCoursesGrid(List<dynamic> courses, BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 8.0),
+      child: GridView.builder(
+        shrinkWrap: true,
+        physics:
+            const NeverScrollableScrollPhysics(), // Disable GridView scroll
+        itemCount: courses.length,
+        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: 2,
+          childAspectRatio: 3 / 4,
+          crossAxisSpacing: 8,
+          mainAxisSpacing: 8,
+        ),
+        itemBuilder: (context, index) {
+          final course = courses[index];
+          return InkWell(
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (_) => CourseDetailsScreen(course: course),
+                ),
+              );
+            },
+            child: Card(
+              color: Colors.white,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
+              clipBehavior: Clip.antiAlias,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Expanded(
+                    child: course.courseImage != null
+                        ? Image.network(
+                            "https://e-learinng-production.up.railway.app/${course.courseImage!}",
+                            width: double.infinity,
+                            fit: BoxFit.cover,
+                            errorBuilder: (context, error, stackTrace) =>
+                                Image.asset(
+                              "assets/images/check2.jpg",
+                              fit: BoxFit.cover,
+                            ),
+                          )
+                        : Image.asset(
+                            "assets/images/check2.jpg",
+                            width: double.infinity,
+                            fit: BoxFit.cover,
+                          ),
+                  ),
+                  Padding(
                     padding: const EdgeInsets.all(8.0),
-                    child: Container(
-                      width: 130,
-                      height: 90,
-                      child: Card(
-                        child: Image.asset("assets/images/check2.jpg"),
+                    child: Text(
+                      course.title,
+                      style: const TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 14,
+                      ),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                    child: Text(
+                      "${course.price} \$",
+                      style: const TextStyle(
+                        color: Colors.green,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 12,
                       ),
                     ),
-                  );
-                },
-                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 2,
-                ),
+                  ),
+                  const SizedBox(height: 8),
+                ],
               ),
-            )
-          ],
-        ),
+            ),
+          );
+        },
       ),
     );
   }

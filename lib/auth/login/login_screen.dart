@@ -2,13 +2,10 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:education_app/auth/choooseRoleToAuth.dart';
 import 'package:education_app/auth/login/login_cubit.dart';
 import 'package:education_app/auth/login/login_states.dart';
-
-import 'package:education_app/homeScreen/homeScreen.dart';
-
 import 'package:education_app/instructor/instructorHomeScreen.dart';
-import 'package:education_app/resources/colors.dart';
-import 'package:education_app/resources/widgets/custom_texr_field.dart';
-import 'package:education_app/resources/widgets/mainButton.dart';
+import 'package:education_app/constants/colors.dart';
+import 'package:education_app/constants/widgets/custom_texr_field.dart';
+import 'package:education_app/constants/widgets/mainButton.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
@@ -40,13 +37,6 @@ class _LoginScreenState extends State<LoginScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
-              const Gap(30),
-              Center(
-                child: Image.asset(
-                  "assets/images/logowitoutBG.png",
-                  width: 220,
-                ),
-              ),
               const Gap(50),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,

@@ -1,18 +1,19 @@
 import 'dart:io';
 import 'package:dio/dio.dart';
-import 'package:education_app/resources/apiKey.dart';
+import 'package:education_app/constants/apiKey.dart';
+
+import 'package:education_app/student/coursesModel.dart';
+import 'package:education_app/student/courses_states.dart';
 import 'package:http_parser/http_parser.dart';
-import 'package:education_app/instructor/coursesStates.dart';
+
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:path/path.dart' as path;
 import 'package:shared_preferences/shared_preferences.dart';
 
-class CoursesCubit extends Cubit<Coursesstates> {
-  CoursesCubit() : super(coursesIntial());
+class InstructorCoursesCubit extends Cubit<CourseState> {
+  InstructorCoursesCubit() : super(CourseInitial());
 
   final Dio dio = Dio();
-
-  get linkBaseUrl => null;
 
   Future<String?> getToken() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -27,7 +28,7 @@ class CoursesCubit extends Cubit<Coursesstates> {
     File? courseImage, // Optional image
   }) async {
     emit(AddCourseLoading());
-    String? token = await getToken();
+    String? token = auth;
     try {
       final Map<String, dynamic> formFields = {
         'title': title,
@@ -66,7 +67,7 @@ class CoursesCubit extends Cubit<Coursesstates> {
       }
 
       final response = await dio.post(
-        "$linkBaseUrl/api/courses/create",
+        "$baseUrlKey/api/courses/create",
         data: formData,
         options: Options(
           headers: {
@@ -86,6 +87,32 @@ class CoursesCubit extends Cubit<Coursesstates> {
     } catch (e) {
       print('❌ DioException: $e');
       emit(AddCourseFaild());
+    }
+  }
+
+  Future<void> fetchCourses() async {
+    emit(MyCourseLoading());
+
+    try {
+      final response = await Dio().get(
+        'https://e-learinng-production.up.railway.app/api/courses/my-courses',
+        options: Options(
+          headers: {
+            'Authorization': 'Bearer $auth',
+          },
+        ),
+      );
+
+      if (response.statusCode == 200) {
+        final List<CourseModel> courses = (response.data['courses'] as List)
+            .map((course) => CourseModel.fromJson(course))
+            .toList();
+        emit(MyCourseSuccess(courses));
+      } else {
+        emit(MyCourseError('فشل في جلب الكورسات: ${response.statusCode}'));
+      }
+    } catch (e) {
+      emit(MyCourseError('حدث خطأ أثناء جلب الكورسات: $e'));
     }
   }
 }

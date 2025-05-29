@@ -3,7 +3,7 @@ import 'package:education_app/auth/login/login_screen.dart';
 import 'package:education_app/bottomBarScreen.dart';
 import 'package:education_app/homeScreen/homeScreen.dart';
 import 'package:education_app/instructor/instructorHomeScreen.dart';
-import 'package:education_app/resources/colors.dart';
+import 'package:education_app/constants/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:shared_preferences/shared_preferences.dart';

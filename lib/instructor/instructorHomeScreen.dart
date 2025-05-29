@@ -1,14 +1,12 @@
+import 'package:education_app/constants/widgets/customAppBar.dart';
 import 'package:education_app/instructor/addCourse.dart';
+import 'package:education_app/instructor/showdataforinstructor.dart';
+import 'package:education_app/settings/profile.dart';
 import 'package:flutter/material.dart';
 
-// Screens
-import 'package:education_app/student/studentHomeScreen.dart';
 import 'package:education_app/notifications/notificationsScreen.dart';
-import 'package:education_app/coursesScreen.dart/myCoueses.dart';
-import 'package:education_app/settings/settingsScreen.dart';
 
-// Resources
-import 'package:education_app/resources/colors.dart';
+import 'package:education_app/constants/colors.dart';
 
 class InsHomeScreen extends StatefulWidget {
   final int index;
@@ -23,10 +21,12 @@ class _InsHomeScreenState extends State<InsHomeScreen> {
   late int _selectedIndex;
 
   final List<Widget> _screens = [
-    StudentHomeScreen(),
+    InsCourses(),
     NotificationScreen(),
     AddCourseScreen(),
-    SettingsScreen(),
+    CreativeProfileScreen(
+      userId: '6837873e6b0e9fd27e2f2e39',
+    ),
   ];
 
   @override
@@ -43,32 +43,34 @@ class _InsHomeScreenState extends State<InsHomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.white,
-      body: _screens[_selectedIndex],
-      bottomNavigationBar: Padding(
-        padding: const EdgeInsets.only(left: 16, right: 16, bottom: 20),
-        child: Container(
-          height: 60,
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(35),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withOpacity(0.1),
-                blurRadius: 10,
-                offset: Offset(0, 4),
-              ),
-            ],
-          ),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: [
-              _buildNavItem(Icons.home, 0),
-              _buildNavItem(Icons.notifications, 1),
-              _buildNavItem(Icons.book, 2),
-              _buildNavItem(Icons.settings, 3),
-            ],
+    return SafeArea(
+      child: Scaffold(
+        backgroundColor: Colors.white,
+        body: _screens[_selectedIndex],
+        bottomNavigationBar: Padding(
+          padding: const EdgeInsets.only(left: 16, right: 16, bottom: 20),
+          child: Container(
+            height: 60,
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(35),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.1),
+                  blurRadius: 10,
+                  offset: Offset(0, 4),
+                ),
+              ],
+            ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                _buildNavItem(Icons.home, 0),
+                _buildNavItem(Icons.notifications, 1),
+                _buildNavItem(Icons.book, 2),
+                _buildNavItem(Icons.settings, 3),
+              ],
+            ),
           ),
         ),
       ),

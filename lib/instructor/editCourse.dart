@@ -1,9 +1,9 @@
 import 'dart:io';
 
-import 'package:education_app/instructor/coursesCubit.dart';
-import 'package:education_app/resources/colors.dart';
-import 'package:education_app/resources/customTextField.dart';
-import 'package:education_app/resources/widgets/mainButton.dart';
+import 'package:education_app/instructor/InscoursesCubit.dart';
+import 'package:education_app/constants/colors.dart';
+import 'package:education_app/constants/customTextField.dart';
+import 'package:education_app/constants/widgets/mainButton.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
@@ -123,7 +123,7 @@ class _AddCourseScreenState extends State<AddCourseScreen> {
                   return;
                 }
 
-                context.read<CoursesCubit>().addCourse(
+                context.read<InstructorCoursesCubit>().addCourse(
                       title: courseName.text,
                       description: description.text,
                       price: double.tryParse(price.text) ?? 0,

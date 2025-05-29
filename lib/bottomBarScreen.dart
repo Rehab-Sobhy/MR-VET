@@ -1,3 +1,4 @@
+import 'package:education_app/constants/widgets/customAppBar.dart';
 import 'package:flutter/material.dart';
 
 // Screens
@@ -7,7 +8,7 @@ import 'package:education_app/coursesScreen.dart/myCoueses.dart';
 import 'package:education_app/settings/settingsScreen.dart';
 
 // Resources
-import 'package:education_app/resources/colors.dart';
+import 'package:education_app/constants/colors.dart';
 
 class BottomBarScreen extends StatefulWidget {
   final int index;
@@ -43,12 +44,13 @@ class _BottomBarScreenState extends State<BottomBarScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: CustomAppBar(),
       backgroundColor: Colors.white,
       body: _screens[_selectedIndex],
       bottomNavigationBar: Padding(
         padding: const EdgeInsets.only(left: 16, right: 16, bottom: 20),
         child: Container(
-          height: 70,
+          height: 60,
           decoration: BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.circular(35),
@@ -88,7 +90,7 @@ class _BottomBarScreenState extends State<BottomBarScreen> {
         ),
         child: Icon(
           icon,
-          size: 28,
+          size: 26,
           color: isSelected ? Colors.white : Colors.grey[600],
         ),
       ),

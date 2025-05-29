@@ -1,12 +1,15 @@
-import 'package:education_app/instructor/coursesCubit.dart';
-import 'package:education_app/splash.dart';
+import 'package:education_app/constants/apiKey.dart';
+import 'package:education_app/instructor/InscoursesCubit.dart';
+import 'package:education_app/instructor/instructorHomeScreen.dart';
+import 'package:education_app/instructor/video_cubit.dart';
+import 'package:education_app/settings/cubitofUser.dart';
+import 'package:education_app/student/coursesCubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:overlay_support/overlay_support.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
 import 'package:education_app/auth/login/login_cubit.dart';
 
 void main() async {
@@ -43,7 +46,10 @@ class MyApp extends StatelessWidget {
     return MultiBlocProvider(
       providers: [
         BlocProvider(create: (context) => LoginCubit()),
-        BlocProvider(create: (context) => CoursesCubit()),
+        BlocProvider(create: (context) => InstructorCoursesCubit()),
+        BlocProvider(create: (context) => StudentCourseCubit()),
+        BlocProvider(create: (context) => VideoUploadCubit()),
+        BlocProvider(create: (context) => ProfileCubit(token: '$auth')),
       ],
       child: ScreenUtilInit(
         designSize: const Size(360, 690),
@@ -54,7 +60,7 @@ class MyApp extends StatelessWidget {
           localizationsDelegates: context.localizationDelegates,
           supportedLocales: context.supportedLocales,
           locale: context.locale,
-          home: SplashScreen(),
+          home: InsHomeScreen(),
         ),
       ),
     );
