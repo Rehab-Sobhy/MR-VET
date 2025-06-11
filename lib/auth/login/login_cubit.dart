@@ -3,7 +3,7 @@ import 'package:bloc/bloc.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:education_app/auth/login/login_states.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:education_app/auth/services.dart'; // import your AuthServiceClass
 
 class LoginCubit extends Cubit<LoginState> {
   LoginCubit() : super(LoginInitial());
@@ -11,10 +11,12 @@ class LoginCubit extends Cubit<LoginState> {
   Future<void> login(String email, String password) async {
     emit(LoginLoading());
     try {
-      print("Logging in...");
+      if (kDebugMode) {
+        print("Logging in...");
+      }
 
       final response = await Dio().post(
-        "https://e-learinng-production.up.railway.app/api/auth/login",
+        "https://mrvet-production.up.railway.app/api/auth/login",
         data: jsonEncode({
           "email": email,
           "password": password,
@@ -26,13 +28,19 @@ class LoginCubit extends Cubit<LoginState> {
         ),
       );
 
-      print("Response: ${response.data}");
+      if (kDebugMode) {
+        print("Response: ${response.data}");
+      }
 
       if (response.data.containsKey("token")) {
         String token = response.data["token"];
-        await _saveToken(token);
+        final role = response.data['user']['role'];
+
+        await _saveToken(token, role);
         emit(LoginSuccess(token: token));
-        print("Login Successful: $token");
+        if (kDebugMode) {
+          print("Login Successful: $token");
+        }
       } else {
         emit(LoginFailed(errMessage: response.data.toString()));
       }
@@ -44,11 +52,11 @@ class LoginCubit extends Cubit<LoginState> {
     }
   }
 
-  Future<void> _saveToken(String token) async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    await prefs.setString("auth_token", token);
-
-    await prefs.setBool("isLoggedIn", true);
-    print("Token saved successfully");
+  Future<void> _saveToken(String token, String role) async {
+    final authService = AuthServiceClass();
+    await authService.saveToken(token, role);
+    if (kDebugMode) {
+      print("Token saved successfully");
+    }
   }
 }

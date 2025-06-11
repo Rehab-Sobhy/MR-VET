@@ -3,6 +3,7 @@ import 'package:dio/dio.dart';
 import 'package:education_app/auth/login/login_screen.dart';
 import 'package:education_app/auth/register/register_model.dart';
 import 'package:education_app/auth/register/register_states.dart';
+import 'package:education_app/auth/services.dart';
 import 'package:education_app/constants/apiKey.dart';
 import 'package:flutter/material.dart';
 import 'package:http_parser/http_parser.dart';
@@ -82,16 +83,17 @@ class RegisterCubit extends Cubit<RegisterState> {
 
       if ((response.statusCode == 200 || response.statusCode == 201) &&
           response.data.containsKey("token")) {
+        // Save token and role if returned
+        final token = response.data["token"];
+        final role = response.data["user"]?["role"] ?? registerModel.role;
+
+        final authService = AuthServiceClass();
+        await authService.saveToken(token, role);
+
         emit(RegisterSuccess());
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(builder: (context) => LoginScreen()),
-        );
-      } else {
-        final msg = response.data['msg'] ?? 'حدث خطأ غير متوقع، حاول مرة أخرى';
-        emit(RegisterFailed(errMessage: msg));
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(msg)),
         );
       }
     } catch (e) {

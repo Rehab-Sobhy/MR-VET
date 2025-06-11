@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:dio/dio.dart';
+import 'package:education_app/auth/services.dart';
 import 'package:education_app/constants/apiKey.dart';
 
 import 'package:education_app/student/coursesModel.dart';
@@ -28,7 +29,8 @@ class InstructorCoursesCubit extends Cubit<CourseState> {
     File? courseImage, // Optional image
   }) async {
     emit(AddCourseLoading());
-    String? token = auth;
+    final authService = AuthServiceClass();
+    final token = await authService.getToken();
     try {
       final Map<String, dynamic> formFields = {
         'title': title,
@@ -60,12 +62,6 @@ class InstructorCoursesCubit extends Cubit<CourseState> {
 
       FormData formData = FormData.fromMap(formFields);
 
-      if (token == null) {
-        emit(AddCourseFaild());
-        print("❌ No token found");
-        return;
-      }
-
       final response = await dio.post(
         "$baseUrlKey/api/courses/create",
         data: formData,
@@ -92,13 +88,14 @@ class InstructorCoursesCubit extends Cubit<CourseState> {
 
   Future<void> fetchCourses() async {
     emit(MyCourseLoading());
-
+    final authService = AuthServiceClass();
+    final token = await authService.getToken();
     try {
       final response = await Dio().get(
-        'https://e-learinng-production.up.railway.app/api/courses/my-courses',
+        'https://mrvet-production.up.railway.app/api/courses/my-courses',
         options: Options(
           headers: {
-            'Authorization': 'Bearer $auth',
+            'Authorization': 'Bearer $token',
           },
         ),
       );
@@ -113,6 +110,105 @@ class InstructorCoursesCubit extends Cubit<CourseState> {
       }
     } catch (e) {
       emit(MyCourseError('حدث خطأ أثناء جلب الكورسات: $e'));
+    }
+  }
+
+  Future<void> UpdateCourse({
+    required String CourseId,
+    required String title,
+    required String description,
+    required double price,
+    required String category,
+    File? courseImage, // Optional image
+  }) async {
+    final authService = AuthServiceClass();
+    final token = await authService.getToken();
+    emit(AddCourseLoading());
+
+    try {
+      final Map<String, dynamic> formFields = {
+        'title': title,
+        'description': description,
+        'price': price,
+        'category': category,
+      };
+
+      // Add image if exists
+      if (courseImage != null) {
+        String extension =
+            path.extension(courseImage.path).toLowerCase().replaceAll('.', '');
+        String mimeType = 'jpeg'; // default
+
+        if (extension == 'png') {
+          mimeType = 'png';
+        } else if (extension == 'jpg' || extension == 'jpeg') {
+          mimeType = 'jpeg';
+        } else {
+          throw Exception('Unsupported image format');
+        }
+
+        formFields['courseImage'] = await MultipartFile.fromFile(
+          courseImage.path,
+          filename: path.basename(courseImage.path),
+          contentType: MediaType('image', mimeType),
+        );
+      }
+
+      FormData formData = FormData.fromMap(formFields);
+
+      final response = await dio.put(
+        "$baseUrlKey/api/courses/$CourseId",
+        data: formData,
+        options: Options(
+          headers: {
+            "Authorization": "Bearer $token",
+            "Content-Type": "multipart/form-data",
+          },
+        ),
+      );
+
+      print('✅ Response: ${response.statusCode}');
+      print('✅ Data: ${response.data}');
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        emit(AddCourseSuccess());
+      } else {
+        emit(AddCourseFaild());
+      }
+    } catch (e) {
+      print('❌ DioException: $e');
+      emit(AddCourseFaild());
+    }
+  }
+
+  Future<void> DeleteCourse({
+    required String CourseId,
+  }) async {
+    emit(DeleteCourseLoading());
+    final authService = AuthServiceClass();
+    final token = await authService.getToken();
+    try {
+      final response = await dio.delete(
+        "$baseUrlKey/api/courses/$CourseId",
+        options: Options(
+          headers: {
+            "Authorization": "Bearer $token",
+            "Content-Type": "multipart/form-data",
+          },
+        ),
+      );
+
+      print('✅ Response: ${response.statusCode}');
+      print('✅ Data: ${response.data}');
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        emit(DeleteCourseSuccess());
+
+        fetchCourses();
+      } else {
+        emit(DeleteCoursefiled());
+      }
+    } catch (e) {
+      print('❌ DioException: $e');
+      emit(DeleteCoursefiled());
     }
   }
 }

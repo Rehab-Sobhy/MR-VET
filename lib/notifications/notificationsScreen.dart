@@ -1,47 +1,188 @@
 import 'package:education_app/notifications/cubit.dart';
+import 'package:education_app/notifications/model.dart';
 import 'package:education_app/notifications/states.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-class NotificationScreen extends StatelessWidget {
-  const NotificationScreen({super.key});
+class NotificationsScreen extends StatefulWidget {
+  const NotificationsScreen({super.key});
 
   @override
+  State<NotificationsScreen> createState() => _NotificationsScreenState();
+}
+
+class _NotificationsScreenState extends State<NotificationsScreen> {
+  @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (_) => NotificationCubit()..fetchNotifications(id: ""),
+    context.read<NotificationCubit>().loadNotifications();
+    return SafeArea(
       child: Scaffold(
         appBar: AppBar(
-          title: const Text('Notifications'),
+          title: const Text('الإشعارات'),
+          centerTitle: true,
         ),
-        body: BlocBuilder<NotificationCubit, NotificationState>(
+        body: BlocConsumer<NotificationCubit, NotificationState>(
+          listener: (context, state) {
+            if (state is NotificationError) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(content: Text(state.message)),
+              );
+            }
+          },
           builder: (context, state) {
             if (state is NotificationLoading) {
               return const Center(child: CircularProgressIndicator());
-            } else if (state is NotificationSuccess) {
+            } else if (state is NotificationLoaded) {
               if (state.notifications.isEmpty) {
-                return const Center(child: Text('No notifications found.'));
+                return const Center(
+                  child: Text('لا توجد إشعارات'),
+                );
               }
-
-              return ListView.builder(
-                itemCount: state.notifications.length,
-                itemBuilder: (context, index) {
-                  final notification = state.notifications[index];
-                  return ListTile(
-                    title: Text(notification.title),
-                    subtitle: Text(notification.body),
-                    trailing: Text(notification.date),
-                  );
+              return RefreshIndicator(
+                onRefresh: () async {
+                  await context.read<NotificationCubit>().loadNotifications();
                 },
+                child: ListView.builder(
+                  itemCount: state.notifications.length,
+                  itemBuilder: (context, index) {
+                    final notification = state.notifications[index];
+                    return _NotificationCard(
+                      notification: notification,
+                      onTap: () {
+                        if (!notification.read) {
+                          context
+                              .read<NotificationCubit>()
+                              .markAsRead(notification.id);
+                        }
+                      },
+                    );
+                  },
+                ),
               );
-            } else if (state is NotificationFailure) {
-              return Center(child: Text('Error: ${state.error}'));
+            } else if (state is NotificationError) {
+              return Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Icon(Icons.error_outline,
+                        size: 48, color: Colors.red),
+                    const SizedBox(height: 16),
+                    Text(state.message),
+                    const SizedBox(height: 16),
+                    ElevatedButton(
+                      onPressed: () {
+                        context.read<NotificationCubit>().loadNotifications();
+                      },
+                      child: const Text('Retry'),
+                    ),
+                  ],
+                ),
+              );
             }
-
-            return const SizedBox();
+            return const Center(child: Text('Pull to refresh notifications'));
           },
         ),
       ),
     );
+  }
+}
+
+class _NotificationCard extends StatelessWidget {
+  final NotificationModel notification;
+  final VoidCallback onTap;
+
+  const _NotificationCard({
+    required this.notification,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final isUnread = !notification.read;
+
+    return InkWell(
+      onTap: onTap,
+      child: Container(
+        margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+        padding: const EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          color: isUnread
+              ? theme.colorScheme.primary.withOpacity(0.1)
+              : theme.cardColor,
+          borderRadius: BorderRadius.circular(12),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.05),
+              blurRadius: 6,
+              offset: const Offset(0, 2),
+            ),
+          ],
+        ),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Container(
+              width: 8,
+              height: 8,
+              margin: const EdgeInsets.only(top: 8, right: 12),
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color:
+                    isUnread ? theme.colorScheme.primary : Colors.transparent,
+              ),
+            ),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        notification.title,
+                        style: theme.textTheme.titleMedium?.copyWith(
+                          fontWeight: FontWeight.bold,
+                          color: isUnread
+                              ? theme.colorScheme.primary
+                              : theme.textTheme.titleMedium?.color,
+                        ),
+                      ),
+                      Text(
+                        _formatDate(notification.createdAt),
+                        style: theme.textTheme.bodySmall?.copyWith(
+                          color: theme.colorScheme.onSurface.withOpacity(0.6),
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    notification.message,
+                    style: theme.textTheme.bodyMedium,
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  String _formatDate(DateTime date) {
+    final now = DateTime.now();
+    final difference = now.difference(date);
+
+    if (difference.inDays > 7) {
+      return '${date.day}/${date.month}/${date.year}';
+    } else if (difference.inDays > 0) {
+      return '${difference.inDays} days ago';
+    } else if (difference.inHours > 0) {
+      return '${difference.inHours} hours ago';
+    } else if (difference.inMinutes > 0) {
+      return '${difference.inMinutes} minutes ago';
+    }
+    return 'Just now';
   }
 }

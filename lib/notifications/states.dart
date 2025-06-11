@@ -1,19 +1,43 @@
 import 'package:education_app/notifications/model.dart';
 
-abstract class NotificationState {}
+abstract class NotificationState {
+  const NotificationState();
+
+  @override
+  List<Object> get props => [];
+}
 
 class NotificationInitial extends NotificationState {}
 
 class NotificationLoading extends NotificationState {}
 
-class NotificationSuccess extends NotificationState {
+class NotificationLoaded extends NotificationState {
   final List<NotificationModel> notifications;
+  final int unreadCount;
 
-  NotificationSuccess(this.notifications);
+  const NotificationLoaded({
+    required this.notifications,
+    required this.unreadCount,
+  });
+
+  @override
+  List<Object> get props => [notifications, unreadCount];
 }
 
-class NotificationFailure extends NotificationState {
-  final String error;
+class NotificationError extends NotificationState {
+  final String message;
 
-  NotificationFailure(this.error);
+  const NotificationError(this.message);
+
+  @override
+  List<Object> get props => [message];
+}
+
+class NotificationMarkedAsRead extends NotificationState {
+  final String notificationId;
+
+  const NotificationMarkedAsRead(this.notificationId);
+
+  @override
+  List<Object> get props => [notificationId];
 }

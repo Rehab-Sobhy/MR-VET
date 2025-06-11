@@ -1,25 +1,26 @@
 import 'dart:io';
+import 'package:education_app/auth/services.dart';
 import 'package:education_app/constants/apiKey.dart';
 import 'package:education_app/settings/cubitofUser.dart';
 import 'package:education_app/settings/statesofuser.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:gap/gap.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:image_picker/image_picker.dart';
 
-class CreativeProfileScreen extends StatefulWidget {
+class ProfileScreen extends StatefulWidget {
   final String userId;
 
-  const CreativeProfileScreen({Key? key, required this.userId})
-      : super(key: key);
+  const ProfileScreen({Key? key, required this.userId}) : super(key: key);
 
   @override
-  State<CreativeProfileScreen> createState() => _CreativeProfileScreenState();
+  State<ProfileScreen> createState() => _ProfileScreenState();
 }
 
-class _CreativeProfileScreenState extends State<CreativeProfileScreen> {
+class _ProfileScreenState extends State<ProfileScreen> {
   late ProfileCubit _profileCubit;
   File? _selectedImage;
   bool _isLoading = false;
@@ -139,7 +140,7 @@ class _CreativeProfileScreenState extends State<CreativeProfileScreen> {
         child: Stack(
           children: [
             Positioned(
-              bottom: -30,
+              bottom: 0,
               left: MediaQuery.of(context).size.width / 2 - 60,
               child: Container(
                 width: 120,
@@ -183,8 +184,8 @@ class _CreativeProfileScreenState extends State<CreativeProfileScreen> {
               ),
             ),
             Positioned(
-              bottom: -30,
-              left: MediaQuery.of(context).size.width / 2 + 40,
+              bottom: -5,
+              left: MediaQuery.of(context).size.width / 2 + 28,
               child: Container(
                 width: 40,
                 height: 40,
@@ -210,7 +211,7 @@ class _CreativeProfileScreenState extends State<CreativeProfileScreen> {
       child: Column(
         children: [
           Text(
-            user['name'] ?? 'No Name Provided',
+            user['name'] ?? 'No Name ',
             style: theme.textTheme.headlineSmall?.copyWith(
               fontWeight: FontWeight.bold,
             ),
@@ -230,6 +231,7 @@ class _CreativeProfileScreenState extends State<CreativeProfileScreen> {
           const Gap(20),
           Divider(color: Colors.grey[300]),
           _buildDetailItem(
+            context: context,
             icon: Iconsax.calendar,
             title: 'Joined Date',
             value: user['createdAt'] != null
@@ -237,14 +239,22 @@ class _CreativeProfileScreenState extends State<CreativeProfileScreen> {
                 : 'Unknown',
           ),
           _buildDetailItem(
+            context: context,
             icon: Iconsax.book,
             title: 'Courses Enrolled',
-            value: user['coursesEnrolled']?.length.toString() ?? '0',
+            value: user['enrolledCourses']?.length.toString() ?? '0',
           ),
           _buildDetailItem(
+            context: context,
             icon: Iconsax.award,
             title: 'Achievements',
             value: user['achievements']?.length.toString() ?? '0',
+          ),
+          _buildDetailItem(
+            context: context,
+            icon: Iconsax.info_circle,
+            title: 'ID',
+            value: user['_id'] ?? 'unknown',
           ),
           const Gap(20),
           SizedBox(
@@ -265,43 +275,66 @@ class _CreativeProfileScreenState extends State<CreativeProfileScreen> {
     );
   }
 
-  void _navigateToEditProfile(BuildContext context) {
-    // Implement navigation to edit profile screen
-  }
-
+  void _navigateToEditProfile(BuildContext context) {}
   Widget _buildDetailItem({
     required IconData icon,
     required String title,
     required String value,
+    required BuildContext context, // Need context for SnackBar
   }) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 12),
-      child: Row(
-        children: [
-          Icon(icon, size: 20, color: Colors.grey[600]),
-          const Gap(16),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+    bool isCopied = false;
+
+    return StatefulBuilder(
+      builder: (context, setState) {
+        return Padding(
+          padding: const EdgeInsets.symmetric(vertical: 12),
+          child: Row(
             children: [
-              Text(
-                title,
-                style: TextStyle(
-                  fontSize: 12,
-                  color: Colors.grey[600],
-                ),
-              ),
-              const Gap(4),
-              Text(
-                value,
-                style: const TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w500,
-                ),
+              Icon(icon, size: 20, color: Colors.grey[600]),
+              const Gap(16),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    title,
+                    style: TextStyle(
+                      fontSize: 12,
+                      color: Colors.grey[600],
+                    ),
+                  ),
+                  const Gap(4),
+                  Tooltip(
+                    message: 'Tap to copy',
+                    child: GestureDetector(
+                      onTap: () {
+                        Clipboard.setData(ClipboardData(text: value));
+                        setState(() => isCopied = true);
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text('Copied "$value" to clipboard'),
+                            duration: Duration(seconds: 1),
+                          ),
+                        );
+                        Future.delayed(Duration(seconds: 2), () {
+                          if (mounted) setState(() => isCopied = false);
+                        });
+                      },
+                      child: Text(
+                        value,
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w500,
+                          color: isCopied ? Colors.blue : null,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ],
           ),
-        ],
-      ),
+        );
+      },
     );
   }
 

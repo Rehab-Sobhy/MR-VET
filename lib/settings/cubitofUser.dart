@@ -1,38 +1,75 @@
-// profile_cubit.dart
 import 'dart:convert';
 import 'dart:io';
-
+import 'package:education_app/auth/services.dart';
 import 'package:education_app/constants/apiKey.dart';
 import 'package:education_app/settings/statesofuser.dart';
+import 'package:education_app/student/coursesModel.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:http/http.dart' as http;
 
 class ProfileCubit extends Cubit<ProfileState> {
-  final String token;
+  String? token;
+  final AuthServiceClass authService =
+      AuthServiceClass(); // AuthService instance
+  List<CourseModel> enrolledCourses = [];
 
-  ProfileCubit({required this.token}) : super(ProfileInitial());
+  ProfileCubit() : super(ProfileInitial());
+
+  // Call this method first to load token before API calls
+  Future<void> loadToken() async {
+    token = await authService.getToken();
+  }
 
   Future<void> fetchUserProfile() async {
+    if (isClosed) return;
     emit(ProfileLoading());
+
+    await loadToken();
+
+    if (token == null) {
+      emit(ProfileError('No auth token found'));
+      return;
+    }
+
     try {
       final response = await http.get(
         Uri.parse('$baseUrlKey/api/users/me'),
         headers: {'Authorization': 'Bearer $token'},
       );
 
-      if (response.statusCode == 200) {
-        final userData = json.decode(response.body);
-        emit(ProfileLoaded(userData));
-      } else {
-        emit(ProfileError('Failed to load profile'));
+      print('API response status: ${response.statusCode}');
+      print('API response body: ${response.body}');
+
+      if (!isClosed) {
+        if (response.statusCode == 200) {
+          final userData = json.decode(response.body);
+
+          final coursesJson = userData['user']['enrolledCourses'] as List;
+          enrolledCourses = coursesJson.map((courseJson) {
+            return CourseModel.fromJson(courseJson);
+          }).toList();
+
+          emit(ProfileLoaded(userData));
+        } else {
+          emit(ProfileError('Failed to load profile'));
+        }
       }
     } catch (e) {
-      emit(ProfileError('Connection error: $e'));
+      if (!isClosed) emit(ProfileError('Connection error: $e'));
     }
   }
 
   Future<void> updateProfileImage(String userId, File imageFile) async {
+    if (isClosed) return;
     emit(ProfileUpdating());
+
+    await loadToken();
+
+    if (token == null) {
+      emit(ProfileError('No auth token found'));
+      return;
+    }
+
     try {
       var request = http.MultipartRequest(
         'POST',
@@ -46,14 +83,16 @@ class ProfileCubit extends Cubit<ProfileState> {
       final response = await request.send();
       final responseData = await response.stream.bytesToString();
 
-      if (response.statusCode == 200) {
-        final updatedUser = json.decode(responseData);
-        emit(ProfileUpdated(updatedUser));
-      } else {
-        emit(ProfileError('Failed to update profile image'));
+      if (!isClosed) {
+        if (response.statusCode == 200) {
+          final updatedUser = json.decode(responseData);
+          emit(ProfileUpdated(updatedUser));
+        } else {
+          emit(ProfileError('Failed to update profile image'));
+        }
       }
     } catch (e) {
-      emit(ProfileError('Error updating image: $e'));
+      if (!isClosed) emit(ProfileError('Error updating image: $e'));
     }
   }
 }

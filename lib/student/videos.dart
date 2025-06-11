@@ -8,21 +8,21 @@ import 'package:iconsax/iconsax.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:shimmer/shimmer.dart';
 
-class VideosScreen extends StatefulWidget {
+class StudentVideosScreen extends StatefulWidget {
   final String courseId;
   final String courseTitle;
 
-  const VideosScreen({
+  const StudentVideosScreen({
     Key? key,
     required this.courseId,
     required this.courseTitle,
   }) : super(key: key);
 
   @override
-  State<VideosScreen> createState() => _VideosScreenState();
+  State<StudentVideosScreen> createState() => _StudentVideosScreenState();
 }
 
-class _VideosScreenState extends State<VideosScreen> {
+class _StudentVideosScreenState extends State<StudentVideosScreen> {
   @override
   void initState() {
     super.initState();
@@ -144,7 +144,7 @@ class _VideosScreenState extends State<VideosScreen> {
           borderRadius: BorderRadius.circular(12),
           onTap: () {
             final fullUrl =
-                'https://e-learinng-production.up.railway.app${video.videoPath}';
+                'https://mrvet-production.up.railway.app${video.videoPath}';
             Navigator.push(
               context,
               MaterialPageRoute(
@@ -244,7 +244,7 @@ class _VideosScreenState extends State<VideosScreen> {
                   ),
                 ),
                 const Padding(
-                  padding: EdgeInsets.only(right: 12),
+                  padding: EdgeInsets.only(right: 8),
                   child:
                       Icon(Iconsax.arrow_left_2, size: 20, color: Colors.grey),
                 ),
@@ -257,13 +257,10 @@ class _VideosScreenState extends State<VideosScreen> {
   }
 
   String? _getThumbnailUrl(String videoPath) {
-    // Implement your thumbnail URL generation logic here
-    // For example, if you have thumbnails stored with similar paths
-    return null; // Return null if no thumbnail available
+    return null;
   }
 
   String _formatDuration(String duration) {
-    // Format your duration string if needed
     return duration;
   }
 }

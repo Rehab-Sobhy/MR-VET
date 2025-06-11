@@ -1,9 +1,16 @@
-import 'package:education_app/constants/apiKey.dart';
+import 'package:education_app/auth/register/cubit.dart';
+
+import 'package:education_app/getAllinstrucorsData.dart/cubit.dart';
 import 'package:education_app/instructor/InscoursesCubit.dart';
-import 'package:education_app/instructor/instructorHomeScreen.dart';
+import 'package:education_app/instructor/cubit_of_Materials.dart';
+
 import 'package:education_app/instructor/video_cubit.dart';
+import 'package:education_app/notifications/cubit.dart';
+
 import 'package:education_app/settings/cubitofUser.dart';
-import 'package:education_app/student/coursesCubit.dart';
+import 'package:education_app/splash.dart';
+
+import 'package:education_app/student/studentCubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -46,10 +53,14 @@ class MyApp extends StatelessWidget {
     return MultiBlocProvider(
       providers: [
         BlocProvider(create: (context) => LoginCubit()),
+        BlocProvider(create: (context) => RegisterCubit()),
         BlocProvider(create: (context) => InstructorCoursesCubit()),
-        BlocProvider(create: (context) => StudentCourseCubit()),
+        BlocProvider(create: (context) => StudentCubit()),
+        BlocProvider(create: (context) => InstructorCubit()),
         BlocProvider(create: (context) => VideoUploadCubit()),
-        BlocProvider(create: (context) => ProfileCubit(token: '$auth')),
+        BlocProvider(create: (context) => MaterialsCubit()),
+        BlocProvider(create: (context) => ProfileCubit()),
+        BlocProvider(create: (context) => NotificationCubit()),
       ],
       child: ScreenUtilInit(
         designSize: const Size(360, 690),
@@ -60,7 +71,7 @@ class MyApp extends StatelessWidget {
           localizationsDelegates: context.localizationDelegates,
           supportedLocales: context.supportedLocales,
           locale: context.locale,
-          home: InsHomeScreen(),
+          home: SplashScreen(),
         ),
       ),
     );

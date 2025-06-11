@@ -1,9 +1,8 @@
-import 'package:education_app/auth/forgetPass.dart/forgetScreen.dart';
 import 'package:education_app/auth/login/login_screen.dart';
-import 'package:education_app/bottomBarScreen.dart';
-import 'package:education_app/homeScreen/homeScreen.dart';
+import 'package:education_app/auth/services.dart';
 import 'package:education_app/instructor/instructorHomeScreen.dart';
 import 'package:education_app/constants/colors.dart';
+import 'package:education_app/student/bottomBarScreen.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -19,11 +18,13 @@ class _SplashScreenState extends State<SplashScreen>
     with SingleTickerProviderStateMixin {
   late AnimationController _controller;
   late Animation<Offset> _animation;
+  final AuthServiceClass _authService = AuthServiceClass();
 
   @override
   void initState() {
     super.initState();
     _initializeAnimation();
+    _navigateAfterDelay();
   }
 
   void _initializeAnimation() {
@@ -35,39 +36,42 @@ class _SplashScreenState extends State<SplashScreen>
     _animation = Tween<Offset>(
       begin: const Offset(0, 1),
       end: Offset.zero,
-    ).animate(CurvedAnimation(
-      parent: _controller,
-      curve: Curves.easeInOut,
-    ));
-
-    _controller.addStatusListener((status) {
-      if (status == AnimationStatus.completed) {
-        _checkUserStatus();
-      }
-    });
+    ).animate(
+      CurvedAnimation(
+        parent: _controller,
+        curve: Curves.easeInOut,
+      ),
+    );
   }
 
-  Future<void> _checkUserStatus() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    bool hasSeenOnboarding = prefs.getBool('hasSeenOnboarding') ?? false;
-    bool isLoggedIn = prefs.getBool('isLoggedIn') ?? false;
+  Future<void> _navigateAfterDelay() async {
+    await Future.delayed(const Duration(seconds: 2));
 
-    final token = await () async {
-      final SharedPreferences prefs = await SharedPreferences.getInstance();
-      return prefs.getString("auth_token");
-    }();
-    print("token: $token");
+    final prefs = await SharedPreferences.getInstance();
+    final bool hasSeenOnboarding = prefs.getBool('hasSeenOnboarding') ?? false;
 
-    if (isLoggedIn) {
-      // Navigate to HomeScreen if already logged in
+    final token = await _authService.getToken();
+    final role = await _authService.getCurrentRole();
+
+    debugPrint("Token: $token");
+    debugPrint("Role: $role");
+
+    if (token != null) {
+      if (role == 'instructor') {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (_) => InsHomeScreen()),
+        );
+      } else if (role == 'student') {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (_) => BottomBarScreen()),
+        );
+      }
+    } else {
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (context) => InsHomeScreen()),
-      );
-    } else if (hasSeenOnboarding) {
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => const LoginScreen()),
+        MaterialPageRoute(builder: (_) => const LoginScreen()),
       );
     }
   }
@@ -91,6 +95,8 @@ class _SplashScreenState extends State<SplashScreen>
               position: _animation,
               child: Image.asset(
                 "assets/images/logowitoutBG.png",
+                width: 300,
+                height: 300,
               ),
             ),
           ],

@@ -17,7 +17,6 @@ class VideoUploadError extends VideoUploadState {
   List<Object?> get props => [message];
 }
 
-// 📥 States for fetching videos
 class VideoFetchLoading extends VideoUploadState {}
 
 class VideoFetchSuccess extends VideoUploadState {
@@ -36,4 +35,13 @@ class VideoFetchError extends VideoUploadState {
 
   @override
   List<Object?> get props => [message];
+}
+
+class VideoDeleteLoading extends VideoUploadState {}
+
+class VideoDeleteSuccess extends VideoUploadState {}
+
+class VideoDeleteError extends VideoUploadState {
+  final String message;
+  VideoDeleteError(this.message);
 }

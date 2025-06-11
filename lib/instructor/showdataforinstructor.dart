@@ -1,7 +1,7 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:education_app/instructor/InscoursesCubit.dart';
-import 'package:education_app/instructor/coursesVideos.dart';
-import 'package:education_app/instructor/uploadVideao.dart';
+import 'package:education_app/instructor/courseDetails.dart';
+
 import 'package:education_app/student/courses_states.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -91,7 +91,7 @@ class _InsCoursesState extends State<InsCourses> {
                   borderRadius: BorderRadius.circular(10),
                 ),
                 child: Image.asset(
-                  "assets/images/check2.jpg",
+                  "assets\images\noimage.jpg",
                   fit: BoxFit.cover,
                 ),
               ),
@@ -107,8 +107,7 @@ class _InsCoursesState extends State<InsCourses> {
       padding: const EdgeInsets.symmetric(horizontal: 8.0),
       child: GridView.builder(
         shrinkWrap: true,
-        physics:
-            const NeverScrollableScrollPhysics(), // Disable GridView scroll
+        physics: const NeverScrollableScrollPhysics(),
         itemCount: courses.length,
         gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
           crossAxisCount: 2,
@@ -123,8 +122,8 @@ class _InsCoursesState extends State<InsCourses> {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (_) => VideoUploadScreen(
-                    id: course.id,
+                  builder: (_) => CourseDetailsScreen(
+                    course: course,
                   ),
                 ),
               );
@@ -141,17 +140,17 @@ class _InsCoursesState extends State<InsCourses> {
                   Expanded(
                     child: course.courseImage != null
                         ? Image.network(
-                            "https://e-learinng-production.up.railway.app/${course.courseImage!}",
+                            "https://mrvet-production.up.railway.app/${course.courseImage!}",
                             width: double.infinity,
                             fit: BoxFit.cover,
                             errorBuilder: (context, error, stackTrace) =>
                                 Image.asset(
-                              "assets/images/check2.jpg",
+                              "assets\images\noimage.jpg",
                               fit: BoxFit.cover,
                             ),
                           )
                         : Image.asset(
-                            "assets/images/check2.jpg",
+                            "assets\images\noimage.jpg",
                             width: double.infinity,
                             fit: BoxFit.cover,
                           ),
@@ -180,21 +179,6 @@ class _InsCoursesState extends State<InsCourses> {
                     ),
                   ),
                   const SizedBox(height: 8),
-                  InkWell(
-                    child: Icon(Icons.video_call),
-                    onTap: () {
-                      print("qqqqqqqqqqqq ${course.id}");
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (_) => VideosScreen(
-                            courseId: course.id,
-                            courseTitle: course.title,
-                          ),
-                        ),
-                      );
-                    },
-                  ),
                 ],
               ),
             ),

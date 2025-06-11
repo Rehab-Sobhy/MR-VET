@@ -154,7 +154,6 @@ class _AddCourseScreenState extends State<AddCourseScreen> {
                       backgroundColor: Colors.green,
                     ),
                   );
-                  Navigator.pop(context);
                 } else if (state is AddCourseFaild) {
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(

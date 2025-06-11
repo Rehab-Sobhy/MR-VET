@@ -57,6 +57,11 @@ dependencies:
   shimmer: ^3.0.0
   video_thumbnail: ^0.5.6
   duration_format: ^0.0.1
+  open_file: ^3.5.10
+  percent_indicator: ^4.2.5
+  flutter_animate: ^4.5.2
+  lottie: ^3.2.0
+  smooth_page_indicator: ^1.2.1
 
 dev_dependencies:
   flutter_test:

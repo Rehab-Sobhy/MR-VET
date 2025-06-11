@@ -2,6 +2,7 @@ import 'package:education_app/constants/widgets/customAppBar.dart';
 import 'package:education_app/instructor/addCourse.dart';
 import 'package:education_app/instructor/showdataforinstructor.dart';
 import 'package:education_app/settings/profile.dart';
+import 'package:education_app/settings/settingsScreen.dart';
 import 'package:flutter/material.dart';
 
 import 'package:education_app/notifications/notificationsScreen.dart';
@@ -22,11 +23,9 @@ class _InsHomeScreenState extends State<InsHomeScreen> {
 
   final List<Widget> _screens = [
     InsCourses(),
-    NotificationScreen(),
+    NotificationsScreen(),
     AddCourseScreen(),
-    CreativeProfileScreen(
-      userId: '6837873e6b0e9fd27e2f2e39',
-    ),
+    SettingsScreen(),
   ];
 
   @override
@@ -43,25 +42,27 @@ class _InsHomeScreenState extends State<InsHomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Scaffold(
-        backgroundColor: Colors.white,
-        body: _screens[_selectedIndex],
-        bottomNavigationBar: Padding(
-          padding: const EdgeInsets.only(left: 16, right: 16, bottom: 20),
-          child: Container(
-            height: 60,
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(35),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withOpacity(0.1),
-                  blurRadius: 10,
-                  offset: Offset(0, 4),
-                ),
-              ],
-            ),
+    return Scaffold(
+      appBar: CustomAppBar(),
+      backgroundColor: Colors.white,
+      body: _screens[_selectedIndex],
+      bottomNavigationBar: Padding(
+        padding: const EdgeInsets.only(left: 16, right: 16, bottom: 20),
+        child: Container(
+          height: 60,
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(35),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.1),
+                blurRadius: 10,
+                offset: Offset(0, 4),
+              ),
+            ],
+          ),
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [

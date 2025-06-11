@@ -1,13 +1,12 @@
-import 'package:education_app/constants/widgets/customAppBar.dart';
+import 'package:education_app/settings/settingsScreen.dart';
+import 'package:education_app/student/subsecribtionWidget.dart';
 import 'package:flutter/material.dart';
 
 // Screens
 import 'package:education_app/student/studentHomeScreen.dart';
 import 'package:education_app/notifications/notificationsScreen.dart';
 import 'package:education_app/coursesScreen.dart/myCoueses.dart';
-import 'package:education_app/settings/settingsScreen.dart';
 
-// Resources
 import 'package:education_app/constants/colors.dart';
 
 class BottomBarScreen extends StatefulWidget {
@@ -24,8 +23,8 @@ class _BottomBarScreenState extends State<BottomBarScreen> {
 
   final List<Widget> _screens = [
     StudentHomeScreen(),
-    NotificationScreen(),
-    CoursesScreen(),
+    NotificationsScreen(),
+    Subsecribtionwidget(),
     SettingsScreen(),
   ];
 
@@ -44,7 +43,6 @@ class _BottomBarScreenState extends State<BottomBarScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CustomAppBar(),
       backgroundColor: Colors.white,
       body: _screens[_selectedIndex],
       bottomNavigationBar: Padding(

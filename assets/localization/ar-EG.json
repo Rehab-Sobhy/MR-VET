@@ -12,7 +12,41 @@
     "loginNow": "سجل الدخول الآن",
     "donnotHaveAcc": "ليس لديك حساب؟",
     "registerNow": "سجل الآن",
-     "role":"الدور"
+     "role":"الدور",
+     "remember_me":"تذكرني ",
+       "enter_your_password":"ادخل كلمة السر",
+         "enter_your_email":"ادخل البريد الالكتروني",
+          "pleaseFillAllFields":"قم بملئ جميع الحقول",
+          "errorTryAgain":"حدث خطأ , حاول لاحقا ",
+        
+  "create_account": "إنشاء حساب",
+  "full_name": "الاسم الكامل",
+  "enter_full_name": "أدخل اسمك الكامل",
+  "email_address": "عنوان البريد الإلكتروني",
+  "enter_email": "أدخل بريدك الإلكتروني",
+ 
+  "enter_password": "أدخل كلمة المرور",
+  "password_hint": "يجب أن تتكون كلمة المرور من 8 أحرف على الأقل",
+  "profile_picture": "صورة الملف الشخصي",
+  "upload_profile": "رفع صورة شخصية",
+  "college_id_proof": "إثبات هوية الكلية",
+  "upload_id_proof": "رفع إثبات الهوية",
+  "complete_registration": "إكمال التسجيل",
+  "already_have_account": "هل لديك حساب بالفعل؟",
+  "login_here": "تسجيل الدخول هنا",
+  "registration_success": "تم التسجيل بنجاح!",
+  "register_failed": "فشل التسجيل. يرجى المحاولة مرة أخرى.",
+  "fill_required_fields": "يرجى ملء جميع الحقول المطلوبة",
+  "invalid_email": "يرجى إدخال عنوان بريد إلكتروني صالح",
+  "password_too_short": "يجب أن تتكون كلمة المرور من 8 أحرف على الأقل",
+  "id_proof_required": "مطلوب إثبات هوية الكلية",
+    "image_required": "مطلوب صورة  شخصية",
+  "image_pick_error": "خطأ في اختيار الصورة",
+  "id_pick_error": "خطأ في اختيار إثبات الهوية",
+  "student": "طالب",
+  "instructor": "مدرس",
+  "letsLearn":"لنبدأ التعلم",
+  "welcom":"مرحبًا"
 
      
 }

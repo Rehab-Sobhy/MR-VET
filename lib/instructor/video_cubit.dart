@@ -1,6 +1,8 @@
+import 'dart:convert';
 import 'dart:io';
 import 'package:bloc/bloc.dart';
 import 'package:dio/dio.dart';
+import 'package:education_app/auth/services.dart';
 import 'package:education_app/instructor/vidModel.dart';
 import 'package:http_parser/http_parser.dart';
 import 'package:mime/mime.dart';
@@ -15,6 +17,8 @@ class VideoUploadCubit extends Cubit<VideoUploadState> {
     required String courseId,
     required File videoFile,
   }) async {
+    final authService = AuthServiceClass();
+    final token = await authService.getToken();
     emit(VideoUploadLoading());
 
     try {
@@ -51,12 +55,12 @@ class VideoUploadCubit extends Cubit<VideoUploadState> {
       ));
 
       final response = await dio.post(
-        'https://e-learinng-production.up.railway.app/api/videos/add',
+        'https://mrvet-production.up.railway.app/api/videos/add',
         data: formData,
         options: Options(
           headers: {
             'Content-Type': 'multipart/form-data',
-            'Authorization': 'Bearer $auth',
+            'Authorization': 'Bearer $token',
           },
         ),
       );
@@ -78,13 +82,14 @@ class VideoUploadCubit extends Cubit<VideoUploadState> {
 
   Future<void> fetchVideosByCourse(String courseId) async {
     emit(VideoFetchLoading());
-
+    final authService = AuthServiceClass();
+    final token = await authService.getToken();
     try {
       final dio = Dio();
       final response = await dio.get(
-        'https://e-learinng-production.up.railway.app/api/videos/course/$courseId',
+        'https://mrvet-production.up.railway.app/api/videos/course/$courseId',
         options: Options(headers: {
-          'Authorization': 'Bearer $auth',
+          'Authorization': 'Bearer $token',
         }),
       );
       print(response.data);
@@ -98,6 +103,98 @@ class VideoUploadCubit extends Cubit<VideoUploadState> {
     } catch (e) {
       emit(VideoFetchError('❌ خطأ أثناء جلب الفيديوهات: $e'));
       print('❌ خطأ أثناء جلب الفيديوهات: $e');
+    }
+  }
+
+  Future<void> deleteVideo(String videoId, String courseId) async {
+    final authService = AuthServiceClass();
+    final token = await authService.getToken();
+    emit(VideoDeleteLoading());
+
+    try {
+      final dio = Dio();
+      print('Sending DELETE request for video ID: $videoId');
+
+      final response = await dio.delete(
+        'https://mrvet-production.up.railway.app/api/courses/$courseId/videos/$videoId',
+        options: Options(headers: {
+          'Authorization': 'Bearer $token',
+        }),
+      );
+
+      print('Response received:');
+      print('Status Code: ${response.statusCode}');
+      print('Headers: ${response.headers}');
+      print('Response Data Type: ${response.data.runtimeType}');
+      print('Response Data: ${response.data}');
+
+      if (response.statusCode == 200 || response.statusCode == 204) {
+        print('Delete successful');
+        emit(VideoDeleteSuccess());
+        await fetchVideosByCourse(courseId);
+      } else {
+        print('Delete failed with status ${response.statusCode}');
+        String errorMessage = 'Failed to delete video';
+
+        if (response.data != null) {
+          try {
+            dynamic responseData = response.data;
+
+            if (response.data is String) {
+              print('Response is String, attempting to parse as JSON');
+              responseData = jsonDecode(response.data);
+            }
+
+            if (responseData is Map) {
+              errorMessage = responseData['message'] ??
+                  responseData['error'] ??
+                  errorMessage;
+            } else if (responseData is String) {
+              errorMessage = responseData;
+            }
+
+            print('Extracted error message: $errorMessage');
+          } catch (e) {
+            print('Error parsing response: $e');
+            errorMessage = '${errorMessage} (Status: ${response.statusCode})';
+          }
+        }
+
+        emit(VideoDeleteError(errorMessage));
+        await fetchVideosByCourse(courseId);
+      }
+    } on DioException catch (e) {
+      print('DioError occurred:');
+      print('Type: ${e.type}');
+      print('Message: ${e.message}');
+      print('Response: ${e.response}');
+
+      String errorMessage = 'Error deleting video';
+      if (e.response != null) {
+        print('Error response data: ${e.response!.data}');
+        try {
+          dynamic errorData = e.response!.data;
+
+          if (e.response!.data is String) {
+            errorData = jsonDecode(e.response!.data);
+          }
+
+          if (errorData is Map) {
+            errorMessage =
+                errorData['message'] ?? errorData['error'] ?? e.message;
+          }
+        } catch (parseError) {
+          print('Error parsing error response: $parseError');
+          errorMessage = '${e.message} (Status: ${e.response?.statusCode})';
+        }
+      }
+
+      emit(VideoDeleteError(errorMessage));
+      await fetchVideosByCourse(courseId);
+    } catch (e) {
+      print('Unexpected error: $e');
+      emit(VideoDeleteError('Unexpected error: ${e.toString()}'));
+      await fetchVideosByCourse(courseId);
     }
   }
 }

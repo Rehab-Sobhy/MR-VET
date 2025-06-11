@@ -18,6 +18,34 @@ class CourseError extends CourseState {
   CourseError(this.message);
 }
 
+class CourseEnrollmentLoading extends CourseState {}
+
+class CourseEnrollmentSuccess extends CourseState {
+  final CourseModel course;
+
+  CourseEnrollmentSuccess(this.course);
+}
+
+class CourseEnrollmentForbidden extends CourseState {
+  final CourseModel course;
+  final String message;
+
+  CourseEnrollmentForbidden({
+    required this.course,
+    required this.message,
+  });
+}
+
+class CourseEnrollmentError extends CourseState {
+  final CourseModel course;
+  final String message;
+
+  CourseEnrollmentError({
+    required this.course,
+    required this.message,
+  });
+}
+
 class MyCourseLoading extends CourseState {}
 
 class MyCourseSuccess extends CourseState {
@@ -34,6 +62,24 @@ class MyCourseError extends CourseState {
 
 class AddCourseSuccess extends CourseState {}
 
-class AddCourseFaild extends CourseState {}
+class AddCourseFaild extends CourseState {
+  AddCourseFaild();
+}
 
 class AddCourseLoading extends CourseState {}
+
+class UpdateCourseSuccess extends CourseState {}
+
+class UpdateCourseFaild extends CourseState {
+  UpdateCourseFaild();
+}
+
+class UpdateCourseLoading extends CourseState {}
+
+class DeleteCourseLoading extends CourseState {}
+
+class DeleteCourseSuccess extends CourseState {}
+
+class DeleteCoursefiled extends CourseState {
+  DeleteCoursefiled();
+}
