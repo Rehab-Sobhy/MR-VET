@@ -5,12 +5,11 @@ import 'package:education_app/notifications/states.dart';
 
 class NotificationCubit extends Cubit<NotificationState> {
   NotificationCubit() : super(NotificationInitial());
-
-  Future<void> fetchNotifications() async {
+  Future<void> fetchNotifications(String id) async {
     emit(NotificationLoading());
     try {
       final response = await Dio().get(
-          'https://e-learinng-production.up.railway.app/api/notifications');
+          'https://e-learinng-production.up.railway.app/api/notifications/$id');
       final List data = response.data;
 
       final notifications =

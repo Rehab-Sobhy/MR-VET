@@ -9,7 +9,7 @@ class NotificationScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (_) => NotificationCubit()..fetchNotifications(),
+      create: (_) => NotificationCubit()..fetchNotifications(id: ""),
       child: Scaffold(
         appBar: AppBar(
           title: const Text('Notifications'),
