@@ -127,7 +127,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   Widget _buildProfileHeader(
       BuildContext context, ThemeData theme, String baseUrl, dynamic user) {
     return GestureDetector(
-      onTap: _pickAndUpdateImage,
+      // onTap: _pickAndUpdateImage,
       child: Container(
         height: 220,
         decoration: BoxDecoration(

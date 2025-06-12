@@ -103,12 +103,12 @@ class _SubsecriptionsState extends State<Subsecriptions> {
                                         errorBuilder:
                                             (context, error, stackTrace) =>
                                                 Image.asset(
-                                          "assets\images\noimage.jpg",
+                                          "assets/images/noimage.jpg",
                                           fit: BoxFit.cover,
                                         ),
                                       )
                                     : Image.asset(
-                                        "assets\images\noimage.jpg",
+                                        "assets/images/noimage.jpg",
                                         width: double.infinity,
                                         fit: BoxFit.cover,
                                       ),

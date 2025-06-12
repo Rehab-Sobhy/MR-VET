@@ -32,9 +32,9 @@ class _SubsecribtionwidgetState extends State<Subsecribtionwidget> {
           final courses = context.read<ProfileCubit>().enrolledCourses;
 
           if (courses.isEmpty) {
-            return const Padding(
+            return Padding(
               padding: EdgeInsets.all(16.0),
-              child: Text('لا توجد دورات مسجلة حاليًا.'),
+              child: Center(child: Text('noSubsecriptionsYet'.tr())),
             );
           }
 
@@ -116,12 +116,12 @@ class _SubsecribtionwidgetState extends State<Subsecribtionwidget> {
                                         errorBuilder:
                                             (context, error, stackTrace) =>
                                                 Image.asset(
-                                          "assets\images\noimage.jpg",
+                                          "assets/images/noimage.jpg",
                                           fit: BoxFit.cover,
                                         ),
                                       )
                                     : Image.asset(
-                                        "assets\images\noimage.jpg",
+                                        "assets/images/noimage.jpg",
                                         width: double.infinity,
                                         fit: BoxFit.cover,
                                       ),

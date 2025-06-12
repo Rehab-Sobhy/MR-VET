@@ -2,10 +2,8 @@ import 'package:education_app/settings/settingsScreen.dart';
 import 'package:education_app/student/subsecribtionWidget.dart';
 import 'package:flutter/material.dart';
 
-// Screens
 import 'package:education_app/student/studentHomeScreen.dart';
 import 'package:education_app/notifications/notificationsScreen.dart';
-import 'package:education_app/coursesScreen.dart/myCoueses.dart';
 
 import 'package:education_app/constants/colors.dart';
 

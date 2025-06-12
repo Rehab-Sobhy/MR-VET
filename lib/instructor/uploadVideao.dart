@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:education_app/constants/colors.dart';
 import 'package:education_app/instructor/video_cubit.dart';
 import 'package:education_app/instructor/video_dtates.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -27,7 +28,7 @@ class _VideoUploadScreenState extends State<VideoUploadScreen> {
       child: Scaffold(
         backgroundColor: Colors.grey[50],
         appBar: AppBar(
-          title: const Text('Upload New Video',
+          title: Text('video_upload.title'.tr(),
               style: TextStyle(fontWeight: FontWeight.bold)),
           centerTitle: true,
           elevation: 0,
@@ -40,7 +41,7 @@ class _VideoUploadScreenState extends State<VideoUploadScreen> {
               setState(() => _isUploading = false);
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
-                  content: const Text('Video uploaded successfully!'),
+                  content: Text('video_upload.success_message'.tr()),
                   behavior: SnackBarBehavior.floating,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(10),
@@ -72,15 +73,16 @@ class _VideoUploadScreenState extends State<VideoUploadScreen> {
                   // Header
                   const SizedBox(height: 20),
                   Text(
-                    'Add New Lecture Video',
+                    'video_upload.header_title'.tr(),
                     style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                           fontWeight: FontWeight.bold,
+                          fontSize: 18,
                           color: primaryColor,
                         ),
                   ),
                   const SizedBox(height: 5),
                   Text(
-                    'Fill the details to upload your video',
+                    'video_upload.header_subtitle'.tr(),
                     style: TextStyle(color: Colors.grey[600]),
                   ),
                   const SizedBox(height: 30),
@@ -89,7 +91,7 @@ class _VideoUploadScreenState extends State<VideoUploadScreen> {
                   TextFormField(
                     controller: _titleController,
                     decoration: InputDecoration(
-                      labelText: 'Video Title',
+                      labelText: 'video_upload.title_label'.tr(),
                       prefixIcon: const Icon(Iconsax.video),
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(10),
@@ -139,8 +141,8 @@ class _VideoUploadScreenState extends State<VideoUploadScreen> {
                             const SizedBox(height: 15),
                             Text(
                               _videoFile == null
-                                  ? 'Select Video File'
-                                  : 'Video Selected',
+                                  ? 'video_upload.select_video'.tr()
+                                  : 'video_upload.video_selected'.tr(),
                               style: const TextStyle(
                                 fontSize: 16,
                                 fontWeight: FontWeight.bold,
@@ -149,7 +151,7 @@ class _VideoUploadScreenState extends State<VideoUploadScreen> {
                             const SizedBox(height: 5),
                             Text(
                               _videoFile == null
-                                  ? 'Tap to browse your files'
+                                  ? 'video_upload.tap_to_browse'.tr()
                                   : _videoFile!.path.split('/').last,
                               style: TextStyle(
                                 color: Colors.grey[600],
@@ -160,7 +162,8 @@ class _VideoUploadScreenState extends State<VideoUploadScreen> {
                             if (_videoFile != null) ...[
                               const SizedBox(height: 15),
                               Chip(
-                                label: const Text('Ready to upload'),
+                                label:
+                                    Text('video_upload.ready_to_upload'.tr()),
                                 backgroundColor: Colors.green[50],
                                 labelStyle:
                                     const TextStyle(color: Colors.green),
@@ -184,7 +187,8 @@ class _VideoUploadScreenState extends State<VideoUploadScreen> {
                                 _videoFile == null) {
                               ScaffoldMessenger.of(context).showSnackBar(
                                 SnackBar(
-                                  content: const Text('Please fill all fields'),
+                                  content:
+                                      Text('video_upload.fill_all_fields'.tr()),
                                   behavior: SnackBarBehavior.floating,
                                   shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(10),
@@ -218,9 +222,9 @@ class _VideoUploadScreenState extends State<VideoUploadScreen> {
                               color: Colors.white,
                             ),
                           )
-                        : const Text(
-                            'Upload Video',
-                            style: TextStyle(fontSize: 16),
+                        : Text(
+                            'video_upload.upload_button'.tr(),
+                            style: const TextStyle(fontSize: 16),
                           ),
                   ),
                 ],

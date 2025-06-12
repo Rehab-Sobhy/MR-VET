@@ -2,6 +2,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:education_app/auth/login/login_screen.dart';
 import 'package:education_app/auth/services.dart';
 import 'package:education_app/constants/colors.dart';
+import 'package:education_app/notifications/notificationsScreen.dart';
 import 'package:education_app/settings/profile.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart' show timeDilation;
@@ -20,6 +21,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
   Widget build(BuildContext context) {
     timeDilation = 2.0;
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: _buildAppBar(),
       body: _buildBody(context),
     );
@@ -27,7 +29,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
   AppBar _buildAppBar() {
     return AppBar(
-      title: Text("Settings",
+      title: Text("settings".tr(),
           style: TextStyle(
               fontWeight: FontWeight.bold,
               fontSize: 24,
@@ -65,9 +67,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
           _buildAnimatedListTile(
             context,
             icon: Icons.language,
-            title: "Language",
-            subtitle:
-                context.locale.languageCode == 'ar' ? "Arabic" : "English",
+            title: "language".tr(),
+            subtitle: context.locale.languageCode == 'ar'
+                ? "arabic".tr()
+                : "english".tr(),
             iconColor: Colors.blue,
             onTap: () => _showLanguageDialog(context),
           ),
@@ -75,8 +78,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
           _buildAnimatedListTile(
             context,
             icon: Icons.person_2_outlined,
-            title: "Profile",
-            subtitle: "System Default",
+            title: "profile".tr(),
+            subtitle: "system_default".tr(),
             iconColor: Colors.purple,
             onTap: () {
               Navigator.push(
@@ -91,8 +94,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
           _buildAnimatedListTile(
             context,
             icon: Icons.notifications,
-            title: "Notifications",
-            subtitle: "Enabled",
+            title: "notifications".tr(),
+            subtitle: "enabled".tr(),
             iconColor: Colors.orange,
             onTap: () => _navigateToNotifications(),
           ),
@@ -110,7 +113,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
           _buildAnimatedListTile(
             context,
             icon: Icons.info,
-            title: "About",
+            title: "about".tr(),
             iconColor: Colors.blueGrey,
             onTap: () => _navigateToAbout(),
           ),
@@ -118,7 +121,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
           _buildAnimatedListTile(
             context,
             icon: isLoggedIn ? Icons.logout : Icons.login,
-            title: isLoggedIn ? "Logout" : "Login",
+            title: isLoggedIn ? "logout".tr() : "login".tr(),
             iconColor: isLoggedIn ? Colors.red : Colors.green,
             onTap: () => isLoggedIn ? _logout(context) : _login(context),
           ),
@@ -181,7 +184,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
   }
 
   void _navigateToNotifications() {
-    print("Navigate to Notifications Settings");
+    Navigator.push(context,
+        MaterialPageRoute(builder: (context) => NotificationsScreen()));
   }
 
   void _navigateToAbout() {
@@ -197,20 +201,21 @@ class _SettingsScreenState extends State<SettingsScreen> {
       context: context,
       builder: (ctx) => AlertDialog(
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
-        title: Text("Confirm Logout",
+        title: Text("confirm_logout".tr(),
             style: TextStyle(fontWeight: FontWeight.bold)),
-        content: Text("Are you sure you want to sign out from your account?"),
+        content: Text("logout_message".tr()),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(ctx),
-            child: Text("CANCEL", style: TextStyle(color: Colors.grey[600])),
+            child:
+                Text("cancel".tr(), style: TextStyle(color: Colors.grey[600])),
           ),
           TextButton(
             onPressed: () {
               Navigator.pop(ctx);
               _handleLogout();
             },
-            child: Text("LOGOUT",
+            child: Text("logout".tr(),
                 style:
                     TextStyle(color: Colors.red, fontWeight: FontWeight.bold)),
           ),
@@ -241,14 +246,14 @@ class _SettingsScreenState extends State<SettingsScreen> {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            const Padding(
+            Padding(
               padding: EdgeInsets.all(20),
-              child: Text("Select Language",
+              child: Text("select_language".tr(),
                   style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
             ),
-            _buildLanguageOption(ctx, "English", "en", true),
-            _buildLanguageOption(ctx, "Arabic", "ar", false),
-            const SizedBox(height: 10),
+            _buildLanguageOption(ctx, "english".tr(), "en", true),
+            _buildLanguageOption(ctx, "arabic".tr(), "ar", false),
+            SizedBox(height: 10),
           ],
         ),
       ),
@@ -268,10 +273,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
         final newLocale =
             isEnglish ? const Locale('en', 'US') : const Locale('ar', 'EG');
 
-        // تغيير اللغة داخل EasyLocalization
         await context.setLocale(newLocale);
 
-        // حفظ اللغة في SharedPreferences
         final prefs = await SharedPreferences.getInstance();
         await prefs.setString('saved_language', languageCode);
 

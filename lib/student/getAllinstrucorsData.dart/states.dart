@@ -1,4 +1,4 @@
-import 'package:education_app/getAllinstrucorsData.dart/model.dart';
+import 'package:education_app/student/getAllinstrucorsData.dart/model.dart';
 // Import the model
 
 // States

@@ -1,6 +1,6 @@
 import 'package:education_app/student/courseDescription.dart';
 import 'package:flutter/material.dart';
-import 'package:education_app/getAllinstrucorsData.dart/model.dart';
+import 'package:education_app/student/getAllinstrucorsData.dart/model.dart';
 
 class InstructorCoursesScreen extends StatelessWidget {
   final InstructorModel instructor;

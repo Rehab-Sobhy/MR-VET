@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:education_app/instructor/InscoursesCubit.dart';
 import 'package:education_app/constants/colors.dart';
 import 'package:education_app/constants/widgets/mainButton.dart';
@@ -17,34 +18,47 @@ class AddCourseScreen extends StatefulWidget {
 }
 
 class _AddCourseScreenState extends State<AddCourseScreen> {
-  final TextEditingController courseName = TextEditingController();
-  final TextEditingController description = TextEditingController();
-  final TextEditingController catController = TextEditingController();
-  final TextEditingController price = TextEditingController();
-  File? courseImage;
+  final TextEditingController _courseNameController = TextEditingController();
+  final TextEditingController _descriptionController = TextEditingController();
+  final TextEditingController _categoryController = TextEditingController();
+  final TextEditingController _priceController = TextEditingController();
+  File? _courseImage;
 
-  Future<void> pickImage() async {
-    final picker = ImagePicker();
-    final picked = await picker.pickImage(source: ImageSource.gallery);
-    if (picked != null) {
-      setState(() {
-        courseImage = File(picked.path);
-      });
+  Future<void> _pickImage() async {
+    try {
+      final picker = ImagePicker();
+      final picked = await picker.pickImage(source: ImageSource.gallery);
+      if (picked != null) {
+        setState(() {
+          _courseImage = File(picked.path);
+        });
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('image_pick_error'.tr())),
+      );
     }
   }
 
   @override
+  void dispose() {
+    _courseNameController.dispose();
+    _descriptionController.dispose();
+    _categoryController.dispose();
+    _priceController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final isArabic = context.locale.languageCode == 'ar';
+
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
         backgroundColor: Colors.white,
-        title: Row(
-          children: [
-            const Text('إنشاء دورة جديدة',
-                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
-          ],
-        ),
+        title: Text('create_new_course'.tr(),
+            style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
         centerTitle: true,
         elevation: 0,
       ),
@@ -53,8 +67,9 @@ class _AddCourseScreenState extends State<AddCourseScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            // Image Upload Section
             GestureDetector(
-              onTap: pickImage,
+              onTap: _pickImage,
               child: Container(
                 height: 180,
                 width: double.infinity,
@@ -62,17 +77,16 @@ class _AddCourseScreenState extends State<AddCourseScreen> {
                   color: Colors.grey[100],
                   borderRadius: BorderRadius.circular(16),
                   border: Border.all(
-                    color: courseImage != null
+                    color: _courseImage != null
                         ? Colors.transparent
                         : Colors.grey[300]!,
                     width: 1.5,
-                    style: BorderStyle.solid,
                   ),
                 ),
-                child: courseImage != null
+                child: _courseImage != null
                     ? ClipRRect(
                         borderRadius: BorderRadius.circular(16),
-                        child: Image.file(courseImage!, fit: BoxFit.cover),
+                        child: Image.file(_courseImage!, fit: BoxFit.cover),
                       )
                     : Column(
                         mainAxisAlignment: MainAxisAlignment.center,
@@ -80,10 +94,10 @@ class _AddCourseScreenState extends State<AddCourseScreen> {
                           Icon(Iconsax.gallery_add,
                               size: 40, color: Colors.grey[600]),
                           const Gap(8),
-                          Text('اضغط لرفع صورة الدورة',
+                          Text('tap_to_upload'.tr(),
                               style: TextStyle(color: Colors.grey[600])),
                           const Gap(4),
-                          Text('(JPEG, PNG)',
+                          Text('image_formats'.tr(),
                               style: TextStyle(
                                   color: Colors.grey[500], fontSize: 12)),
                         ],
@@ -92,50 +106,50 @@ class _AddCourseScreenState extends State<AddCourseScreen> {
             ),
             const Gap(24),
 
-            // Course Name
-            Text('اسم الدورة',
+            // Course Name Field
+            Text('course_name'.tr(),
                 style: TextStyle(
                     fontWeight: FontWeight.bold,
                     color: Colors.grey[800],
                     fontSize: 14)),
             const Gap(8),
-            _buildTextField(courseName,
-                hint: 'أدخل اسم الدورة هنا', prefixIcon: Iconsax.book),
+            _buildTextField(_courseNameController,
+                hint: 'enter_course_name'.tr(), prefixIcon: Iconsax.book),
             const Gap(16),
 
-            // Price
-            Text('السعر',
+            // Price Field
+            Text('price'.tr(),
                 style: TextStyle(
                     fontWeight: FontWeight.bold,
                     color: Colors.grey[800],
                     fontSize: 14)),
             const Gap(8),
-            _buildTextField(price,
-                hint: 'أدخل سعر الدورة',
+            _buildTextField(_priceController,
+                hint: 'enter_price'.tr(),
                 keyboardType: TextInputType.number,
                 prefixIcon: Iconsax.dollar_circle),
             const Gap(16),
 
-            // Category
-            Text('القسم',
+            // Category Field
+            Text('category'.tr(),
                 style: TextStyle(
                     fontWeight: FontWeight.bold,
                     color: Colors.grey[800],
                     fontSize: 14)),
             const Gap(8),
-            _buildTextField(catController,
-                hint: 'أدخل القسم', prefixIcon: Iconsax.category),
+            _buildTextField(_categoryController,
+                hint: 'enter_category'.tr(), prefixIcon: Iconsax.category),
             const Gap(16),
 
-            // Description
-            Text('الوصف',
+            // Description Field
+            Text('description'.tr(),
                 style: TextStyle(
                     fontWeight: FontWeight.bold,
                     color: Colors.grey[800],
                     fontSize: 14)),
             const Gap(8),
-            _buildTextField(description,
-                hint: 'أدخل وصف الدورة هنا',
+            _buildTextField(_descriptionController,
+                hint: 'enter_description'.tr(),
                 maxLines: 5,
                 prefixIcon: Iconsax.note),
             const Gap(32),
@@ -146,7 +160,7 @@ class _AddCourseScreenState extends State<AddCourseScreen> {
                 if (state is AddCourseSuccess) {
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(
-                      content: const Text('تم إضافة الدورة بنجاح!'),
+                      content: Text('course_added_success'.tr()),
                       behavior: SnackBarBehavior.floating,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(10),
@@ -154,10 +168,11 @@ class _AddCourseScreenState extends State<AddCourseScreen> {
                       backgroundColor: Colors.green,
                     ),
                   );
+                  Navigator.pop(context);
                 } else if (state is AddCourseFaild) {
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(
-                      content: Text("er"),
+                      content: Text('error_occurred'.tr()),
                       behavior: SnackBarBehavior.floating,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(10),
@@ -170,18 +185,17 @@ class _AddCourseScreenState extends State<AddCourseScreen> {
               builder: (context, state) {
                 return MainButton(
                   backGroundColor: primaryColor,
-                  text: "إضافة الدورة",
-                  textColor: white,
+                  text: "add_course".tr(),
+                  textColor: Colors.white,
                   onTap: () {
-                    if (courseName.text.isEmpty ||
-                        description.text.isEmpty ||
-                        price.text.isEmpty ||
-                        catController.text.isEmpty ||
-                        courseImage == null) {
+                    if (_courseNameController.text.isEmpty ||
+                        _descriptionController.text.isEmpty ||
+                        _priceController.text.isEmpty ||
+                        _categoryController.text.isEmpty ||
+                        _courseImage == null) {
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(
-                          content:
-                              const Text("يرجى ملء جميع الحقول واختيار صورة"),
+                          content: Text('fill_all_fields'.tr()),
                           behavior: SnackBarBehavior.floating,
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(10),
@@ -192,11 +206,11 @@ class _AddCourseScreenState extends State<AddCourseScreen> {
                     }
 
                     context.read<InstructorCoursesCubit>().addCourse(
-                          title: courseName.text,
-                          description: description.text,
-                          price: double.tryParse(price.text) ?? 0,
-                          category: catController.text,
-                          courseImage: courseImage,
+                          title: _courseNameController.text,
+                          description: _descriptionController.text,
+                          price: double.tryParse(_priceController.text) ?? 0,
+                          category: _categoryController.text,
+                          courseImage: _courseImage,
                         );
                   },
                 );
@@ -208,15 +222,20 @@ class _AddCourseScreenState extends State<AddCourseScreen> {
     );
   }
 
-  Widget _buildTextField(TextEditingController controller,
-      {String? hint,
-      int maxLines = 1,
-      TextInputType? keyboardType,
-      IconData? prefixIcon}) {
+  Widget _buildTextField(
+    TextEditingController controller, {
+    String? hint,
+    int maxLines = 1,
+    TextInputType? keyboardType,
+    IconData? prefixIcon,
+  }) {
     return TextField(
       controller: controller,
       maxLines: maxLines,
       keyboardType: keyboardType,
+      textAlign: context.locale.languageCode == 'ar'
+          ? TextAlign.right
+          : TextAlign.left,
       decoration: InputDecoration(
         hintText: hint,
         prefixIcon: prefixIcon != null ? Icon(prefixIcon) : null,

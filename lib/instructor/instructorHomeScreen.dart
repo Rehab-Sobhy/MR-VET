@@ -1,7 +1,7 @@
 import 'package:education_app/constants/widgets/customAppBar.dart';
 import 'package:education_app/instructor/addCourse.dart';
 import 'package:education_app/instructor/showdataforinstructor.dart';
-import 'package:education_app/settings/profile.dart';
+
 import 'package:education_app/settings/settingsScreen.dart';
 import 'package:flutter/material.dart';
 
@@ -43,7 +43,6 @@ class _InsHomeScreenState extends State<InsHomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CustomAppBar(),
       backgroundColor: Colors.white,
       body: _screens[_selectedIndex],
       bottomNavigationBar: Padding(

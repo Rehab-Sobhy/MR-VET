@@ -9,6 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 class CourseDetailsScreen extends StatefulWidget {
   final dynamic course;
@@ -32,7 +33,7 @@ class _CourseDetailsScreenState extends State<CourseDetailsScreen> {
         if (state is DeleteCourseSuccess) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text("Course deleted successfully"),
+              content: Text("course.delete_success".tr()),
               backgroundColor: Colors.green,
             ),
           );
@@ -41,7 +42,7 @@ class _CourseDetailsScreenState extends State<CourseDetailsScreen> {
         if (state is DeleteCoursefiled) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text("Failed to delete course"),
+              content: Text("course.delete_failed".tr()),
               backgroundColor: Colors.red,
             ),
           );
@@ -169,7 +170,7 @@ class _CourseDetailsScreenState extends State<CourseDetailsScreen> {
                                         backgroundColor: theme
                                             .colorScheme.secondaryContainer,
                                         label: Text(
-                                          '12 Hours',
+                                          "course.hours".tr(args: ['12']),
                                           style: TextStyle(
                                               color: theme.colorScheme
                                                   .onSecondaryContainer),
@@ -238,7 +239,7 @@ class _CourseDetailsScreenState extends State<CourseDetailsScreen> {
                                 Row(
                                   children: [
                                     Text(
-                                      "Course Description",
+                                      "course.description".tr(),
                                       style:
                                           theme.textTheme.titleMedium?.copyWith(
                                         fontWeight: FontWeight.bold,
@@ -256,14 +257,14 @@ class _CourseDetailsScreenState extends State<CourseDetailsScreen> {
                                 AnimatedCrossFade(
                                   firstChild: Text(
                                     widget.course.description ??
-                                        "No description provided",
+                                        "course.no_description".tr(),
                                     style: theme.textTheme.bodyMedium,
                                     maxLines: 3,
                                     overflow: TextOverflow.ellipsis,
                                   ),
                                   secondChild: Text(
                                     widget.course.description ??
-                                        "No description provided",
+                                        "course.no_description".tr(),
                                     style: theme.textTheme.bodyMedium,
                                   ),
                                   crossFadeState: _isExpanded
@@ -293,8 +294,8 @@ class _CourseDetailsScreenState extends State<CourseDetailsScreen> {
                       _buildActionCard(
                         context,
                         icon: Icons.play_circle_fill,
-                        label: "Course Videos",
-                        subtitle: "12 videos",
+                        label: "course.videos".tr(),
+                        subtitle: "course.videos_count".tr(args: ['12']),
                         color: Colors.blue,
                         onTap: () {
                           Navigator.push(
@@ -312,8 +313,8 @@ class _CourseDetailsScreenState extends State<CourseDetailsScreen> {
                       _buildActionCard(
                         context,
                         icon: Icons.article,
-                        label: "Materials",
-                        subtitle: "5 files",
+                        label: "course.materials".tr(),
+                        subtitle: 'Tap to show ',
                         color: Colors.purple,
                         onTap: () {
                           Navigator.push(
@@ -342,7 +343,7 @@ class _CourseDetailsScreenState extends State<CourseDetailsScreen> {
                 foregroundColor: theme.colorScheme.onPrimary,
                 elevation: 4,
                 icon: Icon(Icons.add),
-                label: Text("Add Content"),
+                label: Text("course.add_content".tr()),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(16),
                 ),
@@ -359,13 +360,12 @@ class _CourseDetailsScreenState extends State<CourseDetailsScreen> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text("Delete Course"),
-          content: Text(
-              "Are you sure you want to delete this course? This action cannot be undone."),
+          title: Text("course.delete_title".tr()),
+          content: Text("course.delete_confirmation".tr()),
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(context),
-              child: Text("Cancel"),
+              child: Text("common.cancel".tr()),
             ),
             TextButton(
               onPressed: () {
@@ -375,7 +375,7 @@ class _CourseDetailsScreenState extends State<CourseDetailsScreen> {
                     .DeleteCourse(CourseId: widget.course.id);
               },
               child: Text(
-                "Delete",
+                "common.delete".tr(),
                 style: TextStyle(color: Colors.red),
               ),
             ),
@@ -387,7 +387,7 @@ class _CourseDetailsScreenState extends State<CourseDetailsScreen> {
 
   Widget _buildDefaultImage() {
     return Image.asset(
-      "assets\images\noimage.jpg",
+      "assets/images/noimage.jpg",
       fit: BoxFit.cover,
     );
   }
@@ -465,7 +465,7 @@ class _CourseDetailsScreenState extends State<CourseDetailsScreen> {
             mainAxisSize: MainAxisSize.min,
             children: [
               Text(
-                "Course Options",
+                "course.options".tr(),
                 style: Theme.of(context).textTheme.titleLarge?.copyWith(
                       fontWeight: FontWeight.bold,
                     ),
@@ -474,7 +474,7 @@ class _CourseDetailsScreenState extends State<CourseDetailsScreen> {
               _buildAddOption(
                 context,
                 icon: Icons.video_collection,
-                label: "New Video",
+                label: "course.new_video".tr(),
                 onTap: () {
                   Navigator.pop(context);
                   Navigator.push(
@@ -491,7 +491,7 @@ class _CourseDetailsScreenState extends State<CourseDetailsScreen> {
               _buildAddOption(
                 context,
                 icon: Icons.insert_drive_file,
-                label: "New Material",
+                label: "course.new_material".tr(),
                 onTap: () {
                   Navigator.pop(context);
                   Navigator.push(
@@ -508,7 +508,7 @@ class _CourseDetailsScreenState extends State<CourseDetailsScreen> {
               _buildAddOption(
                 context,
                 icon: Icons.delete,
-                label: "Delete Course",
+                label: "course.delete_course".tr(),
                 onTap: () {
                   Navigator.pop(context);
                   _showDeleteConfirmation(context);

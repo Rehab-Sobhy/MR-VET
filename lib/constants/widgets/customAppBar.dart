@@ -1,6 +1,7 @@
 import 'package:easy_localization/easy_localization.dart';
-import 'package:education_app/auth/login/login_screen.dart';
+
 import 'package:education_app/constants/colors.dart';
+import 'package:education_app/notifications/notificationsScreen.dart';
 import 'package:education_app/settings/cubitofUser.dart';
 import 'package:education_app/settings/statesofuser.dart';
 import 'package:flutter/material.dart';
@@ -139,7 +140,13 @@ class _CustomAppBarState extends State<CustomAppBar> {
                         const SizedBox(width: 10),
                         _buildIconButton(
                           icon: Icons.notifications,
-                          onPressed: widget.onNotificationPressed,
+                          onPressed: () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) =>
+                                        NotificationsScreen()));
+                          },
                           showBadge: true,
                         ),
                       ],

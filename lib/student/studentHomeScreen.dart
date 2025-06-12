@@ -1,7 +1,7 @@
 import 'package:education_app/constants/widgets/customAppBar.dart';
-import 'package:education_app/getAllinstrucorsData.dart/coursesbyInId.dart';
-import 'package:education_app/getAllinstrucorsData.dart/cubit.dart';
-import 'package:education_app/getAllinstrucorsData.dart/states.dart';
+import 'package:education_app/student/getAllinstrucorsData.dart/coursesbyInId.dart';
+import 'package:education_app/student/getAllinstrucorsData.dart/cubit.dart';
+import 'package:education_app/student/getAllinstrucorsData.dart/states.dart';
 import 'package:education_app/settings/cubitofUser.dart';
 import 'package:education_app/student/courseDescription.dart';
 import 'package:education_app/student/courses_states.dart';
@@ -179,12 +179,12 @@ class _StudentHomeScreenState extends State<StudentHomeScreen> {
                                         errorBuilder:
                                             (context, error, stackTrace) =>
                                                 Image.asset(
-                                          "assets\images\noimage.jpg",
+                                          "assets/images/noimage.jpg",
                                           fit: BoxFit.fill,
                                         ),
                                       )
                                     : Image.asset(
-                                        "assets\images\noimage.jpg",
+                                        "assets/images/noimage.jpg",
                                         fit: BoxFit.fill,
                                       ),
                               ),
@@ -262,12 +262,12 @@ class _StudentHomeScreenState extends State<StudentHomeScreen> {
                         fit: BoxFit.fill,
                         errorBuilder: (context, error, stackTrace) =>
                             Image.asset(
-                          "assets\images\noimage.jpg",
+                          "assets/images/noimage.jpg",
                           fit: BoxFit.fill,
                         ),
                       )
                     : Image.asset(
-                        "assets\images\noimage.jpg",
+                        "assets/images/noimage.jpg",
                         width: double.infinity,
                         fit: BoxFit.fill,
                       ),

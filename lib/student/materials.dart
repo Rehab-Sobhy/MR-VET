@@ -9,9 +9,9 @@ import 'package:open_file/open_file.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
 
-class MaterialsScreen extends StatelessWidget {
+class StudentMaterialsScreen extends StatelessWidget {
   final String courseId;
-  const MaterialsScreen({super.key, required this.courseId});
+  const StudentMaterialsScreen({super.key, required this.courseId});
 
   Future<String> _getDownloadPath(String fileName) async {
     final dir = await getApplicationDocumentsDirectory();
@@ -67,13 +67,21 @@ class MaterialsScreen extends StatelessWidget {
       child: Scaffold(
         backgroundColor: Colors.white,
         appBar: AppBar(
-          leading: IconButton(
-              onPressed: () {}, icon: Icon(Icons.arrow_back_ios_new)),
-          backgroundColor: Colors.white,
           title: Text('materials.title'.tr()),
           centerTitle: true,
           elevation: 0,
-          flexibleSpace: Container(),
+          flexibleSpace: Container(
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                colors: [
+                  const Color.fromARGB(255, 88, 112, 243),
+                  const Color.fromARGB(255, 133, 0, 133)
+                ],
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+              ),
+            ),
+          ),
         ),
         body: Container(
           decoration: BoxDecoration(
@@ -81,6 +89,7 @@ class MaterialsScreen extends StatelessWidget {
               begin: Alignment.topCenter,
               end: Alignment.bottomCenter,
               colors: [
+                Colors.blue.shade50,
                 Colors.white,
               ],
             ),
@@ -262,40 +271,6 @@ class MaterialsScreen extends StatelessWidget {
                                     ),
                                   );
                                   OpenFile.open(path);
-                                },
-                              ),
-                              IconButton(
-                                icon: Icon(Icons.delete, color: Colors.red),
-                                onPressed: () {
-                                  showDialog(
-                                    context: context,
-                                    builder: (context) => AlertDialog(
-                                      title:
-                                          Text('materials.delete_title'.tr()),
-                                      content: Text(
-                                          'materials.delete_confirmation'.tr()),
-                                      actions: [
-                                        TextButton(
-                                          onPressed: () =>
-                                              Navigator.pop(context),
-                                          child: Text('common.cancel'.tr()),
-                                        ),
-                                        TextButton(
-                                          onPressed: () {
-                                            Navigator.pop(context);
-                                            context
-                                                .read<MaterialsCubit>()
-                                                .DeleteMaterial(
-                                                    courseId: courseId,
-                                                    materialId: materialId);
-                                          },
-                                          child: Text('common.delete'.tr(),
-                                              style:
-                                                  TextStyle(color: Colors.red)),
-                                        ),
-                                      ],
-                                    ),
-                                  );
                                 },
                               ),
                             ],

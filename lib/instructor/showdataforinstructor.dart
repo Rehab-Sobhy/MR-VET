@@ -1,4 +1,5 @@
 import 'package:easy_localization/easy_localization.dart';
+import 'package:education_app/constants/widgets/customAppBar.dart';
 import 'package:education_app/instructor/InscoursesCubit.dart';
 import 'package:education_app/instructor/courseDetails.dart';
 
@@ -23,6 +24,7 @@ class _InsCoursesState extends State<InsCourses> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: CustomAppBar(),
       backgroundColor: Colors.white,
       body: BlocBuilder<InstructorCoursesCubit, CourseState>(
         builder: (context, state) {
@@ -40,7 +42,7 @@ class _InsCoursesState extends State<InsCourses> {
                 children: [
                   const Gap(20),
                   const Gap(20),
-                  _buildSectionHeader("courses", context),
+                  _buildSectionHeader("myCourses".tr(), context),
                   const Gap(8),
                   _buildCoursesGrid(courses, context),
                   const Gap(20),
@@ -64,10 +66,6 @@ class _InsCoursesState extends State<InsCourses> {
             style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
           ),
           const Spacer(),
-          Text(
-            "showall".tr(),
-            style: const TextStyle(color: Colors.blue),
-          ),
         ],
       ),
     );
@@ -91,7 +89,7 @@ class _InsCoursesState extends State<InsCourses> {
                   borderRadius: BorderRadius.circular(10),
                 ),
                 child: Image.asset(
-                  "assets\images\noimage.jpg",
+                  "assets/images/noimage.jpg",
                   fit: BoxFit.cover,
                 ),
               ),
@@ -145,12 +143,12 @@ class _InsCoursesState extends State<InsCourses> {
                             fit: BoxFit.cover,
                             errorBuilder: (context, error, stackTrace) =>
                                 Image.asset(
-                              "assets\images\noimage.jpg",
+                              "assets/images/noimage.jpg",
                               fit: BoxFit.cover,
                             ),
                           )
                         : Image.asset(
-                            "assets\images\noimage.jpg",
+                            "assets/images/noimage.jpg",
                             width: double.infinity,
                             fit: BoxFit.cover,
                           ),

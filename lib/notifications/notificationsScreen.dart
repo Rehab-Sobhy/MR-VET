@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:education_app/notifications/cubit.dart';
 import 'package:education_app/notifications/model.dart';
 import 'package:education_app/notifications/states.dart';
@@ -15,73 +16,69 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
   @override
   Widget build(BuildContext context) {
     context.read<NotificationCubit>().loadNotifications();
-    return SafeArea(
-      child: Scaffold(
-        appBar: AppBar(
-          title: const Text('الإشعارات'),
-          centerTitle: true,
-        ),
-        body: BlocConsumer<NotificationCubit, NotificationState>(
-          listener: (context, state) {
-            if (state is NotificationError) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text(state.message)),
+    return Scaffold(
+      backgroundColor: Colors.white,
+      appBar: AppBar(
+        backgroundColor: Colors.white,
+        title: Text('notifications'.tr()),
+        centerTitle: true,
+      ),
+      body: BlocConsumer<NotificationCubit, NotificationState>(
+        listener: (context, state) {
+          if (state is NotificationError) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text(state.message)),
+            );
+          }
+        },
+        builder: (context, state) {
+          if (state is NotificationLoading) {
+            return const Center(child: CircularProgressIndicator());
+          } else if (state is NotificationLoaded) {
+            if (state.notifications.isEmpty) {
+              return const Center(
+                child: Text('لا توجد إشعارات'),
               );
             }
-          },
-          builder: (context, state) {
-            if (state is NotificationLoading) {
-              return const Center(child: CircularProgressIndicator());
-            } else if (state is NotificationLoaded) {
-              if (state.notifications.isEmpty) {
-                return const Center(
-                  child: Text('لا توجد إشعارات'),
-                );
-              }
-              return RefreshIndicator(
-                onRefresh: () async {
-                  await context.read<NotificationCubit>().loadNotifications();
+            return RefreshIndicator(
+              onRefresh: () async {
+                await context.read<NotificationCubit>().loadNotifications();
+              },
+              child: ListView.builder(
+                itemCount: state.notifications.length,
+                itemBuilder: (context, index) {
+                  final notification = state.notifications[index];
+                  return _NotificationCard(
+                    notification: notification,
+                    onTap: () {
+                      if (!notification.read) {
+                        context
+                            .read<NotificationCubit>()
+                            .markAsRead(notification.id);
+                      }
+                    },
+                  );
                 },
-                child: ListView.builder(
-                  itemCount: state.notifications.length,
-                  itemBuilder: (context, index) {
-                    final notification = state.notifications[index];
-                    return _NotificationCard(
-                      notification: notification,
-                      onTap: () {
-                        if (!notification.read) {
-                          context
-                              .read<NotificationCubit>()
-                              .markAsRead(notification.id);
-                        }
-                      },
-                    );
-                  },
-                ),
-              );
-            } else if (state is NotificationError) {
-              return Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    const Icon(Icons.error_outline,
-                        size: 48, color: Colors.red),
-                    const SizedBox(height: 16),
-                    Text(state.message),
-                    const SizedBox(height: 16),
-                    ElevatedButton(
-                      onPressed: () {
-                        context.read<NotificationCubit>().loadNotifications();
-                      },
-                      child: const Text('Retry'),
-                    ),
-                  ],
-                ),
-              );
-            }
-            return const Center(child: Text('Pull to refresh notifications'));
-          },
-        ),
+              ),
+            );
+          } else if (state is NotificationError) {
+            return Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const SizedBox(height: 16),
+                  ElevatedButton(
+                    onPressed: () {
+                      context.read<NotificationCubit>().loadNotifications();
+                    },
+                    child: Text('retry'.tr()),
+                  ),
+                ],
+              ),
+            );
+          }
+          return const Center(child: Text(''));
+        },
       ),
     );
   }
