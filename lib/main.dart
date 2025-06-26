@@ -1,16 +1,12 @@
 import 'package:education_app/auth/register/cubit.dart';
 import 'package:education_app/student/subsercriptions_cubit.dart';
-
 import 'package:education_app/student/getAllinstrucorsData.dart/cubit.dart';
 import 'package:education_app/instructor/InscoursesCubit.dart';
 import 'package:education_app/instructor/cubit_of_Materials.dart';
-
 import 'package:education_app/instructor/video_cubit.dart';
 import 'package:education_app/notifications/cubit.dart';
-
 import 'package:education_app/settings/cubitofUser.dart';
 import 'package:education_app/splash.dart';
-
 import 'package:education_app/student/studentCubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -26,7 +22,6 @@ void main() async {
 
   SharedPreferences prefs = await SharedPreferences.getInstance();
   String? savedLanguage = prefs.getString('saved_language');
-
   Locale deviceLocale = WidgetsBinding.instance.platformDispatcher.locale;
 
   runApp(
@@ -35,15 +30,22 @@ void main() async {
         supportedLocales: const [Locale('en', 'US'), Locale('ar', 'EG')],
         path: 'assets/localization',
         fallbackLocale: const Locale('en', 'US'),
-        startLocale: savedLanguage == 'ar'
-            ? const Locale('ar', 'EG')
-            : savedLanguage == 'en'
-                ? const Locale('en', 'US')
-                : deviceLocale,
+        startLocale: getValidLocale(savedLanguage, deviceLocale),
         child: const MyApp(),
       ),
     ),
   );
+}
+
+/// هذه الدالة تتحقق من اللغة المحفوظة أو لغة الجهاز وتعطي لغة مدعومة
+Locale getValidLocale(String? savedLanguage, Locale deviceLocale) {
+  if (savedLanguage == 'ar') return const Locale('ar', 'EG');
+  if (savedLanguage == 'en') return const Locale('en', 'US');
+
+  if (deviceLocale.languageCode == 'ar') return const Locale('ar', 'EG');
+  if (deviceLocale.languageCode == 'en') return const Locale('en', 'US');
+
+  return const Locale('en', 'US'); // fallback لو اللغة مش مدعومة
 }
 
 class MyApp extends StatelessWidget {
@@ -70,8 +72,7 @@ class MyApp extends StatelessWidget {
         splitScreenMode: true,
         child: MaterialApp(
           theme: ThemeData(
-            scaffoldBackgroundColor:
-                Colors.white, // ← اللون الموحد لكل Scaffold
+            scaffoldBackgroundColor: Colors.white,
           ),
           debugShowCheckedModeBanner: false,
           localizationsDelegates: context.localizationDelegates,
