@@ -99,7 +99,7 @@ class InstructorCoursesCubit extends Cubit<CourseState> {
           },
         ),
       );
-
+      print(response);
       if (response.statusCode == 200) {
         final List<CourseModel> courses = (response.data['courses'] as List)
             .map((course) => CourseModel.fromJson(course))
@@ -110,6 +110,7 @@ class InstructorCoursesCubit extends Cubit<CourseState> {
       }
     } catch (e) {
       emit(MyCourseError('حدث خطأ أثناء جلب الكورسات: $e'));
+      print(e);
     }
   }
 
@@ -119,11 +120,11 @@ class InstructorCoursesCubit extends Cubit<CourseState> {
     required String description,
     required double price,
     required String category,
-    File? courseImage, // Optional image
+    File? courseImage,
   }) async {
     final authService = AuthServiceClass();
     final token = await authService.getToken();
-    emit(AddCourseLoading());
+    emit(UpdateCourseLoading());
 
     try {
       final Map<String, dynamic> formFields = {
@@ -133,7 +134,6 @@ class InstructorCoursesCubit extends Cubit<CourseState> {
         'category': category,
       };
 
-      // Add image if exists
       if (courseImage != null) {
         String extension =
             path.extension(courseImage.path).toLowerCase().replaceAll('.', '');
@@ -169,14 +169,15 @@ class InstructorCoursesCubit extends Cubit<CourseState> {
 
       print('✅ Response: ${response.statusCode}');
       print('✅ Data: ${response.data}');
+
       if (response.statusCode == 200 || response.statusCode == 201) {
-        emit(AddCourseSuccess());
+        emit(UpdateCourseSuccess());
       } else {
-        emit(AddCourseFaild());
+        emit(UpdateCourseFaild());
       }
     } catch (e) {
       print('❌ DioException: $e');
-      emit(AddCourseFaild());
+      emit(UpdateCourseFaild());
     }
   }
 

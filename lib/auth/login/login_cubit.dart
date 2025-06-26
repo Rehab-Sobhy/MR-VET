@@ -59,4 +59,8 @@ class LoginCubit extends Cubit<LoginState> {
       print("Token saved successfully");
     }
   }
+
+  void reset() {
+    emit(LoginInitial()); // Or whatever your initial state is
+  }
 }

@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
+import 'package:education_app/auth/login/login_states.dart';
 import 'package:education_app/auth/services.dart';
 import 'package:education_app/constants/apiKey.dart';
 import 'package:education_app/settings/statesofuser.dart';
@@ -94,5 +95,9 @@ class ProfileCubit extends Cubit<ProfileState> {
     } catch (e) {
       if (!isClosed) emit(ProfileError('Error updating image: $e'));
     }
+  }
+
+  void reset() {
+    emit(ProfileInitial()); // Or whatever your initial state is
   }
 }

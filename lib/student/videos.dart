@@ -7,6 +7,7 @@ import 'package:education_app/instructor/video_dtates.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:shimmer/shimmer.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 class StudentVideosScreen extends StatefulWidget {
   final String courseId;
@@ -42,7 +43,7 @@ class _StudentVideosScreenState extends State<StudentVideosScreen> {
             children: [
               Text(widget.courseTitle,
                   style: TextStyle(fontSize: 14, color: Colors.grey[600])),
-              const Text('مكتبة الفيديوهات',
+              Text('videos_screen.video_library'.tr(),
                   style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14)),
             ],
           ),
@@ -73,10 +74,10 @@ class _StudentVideosScreenState extends State<StudentVideosScreen> {
                       Icon(Iconsax.video_remove,
                           size: 60, color: Colors.grey[400]),
                       const SizedBox(height: 16),
-                      Text('لا توجد فيديوهات متاحة بعد',
+                      Text('videos_screen.no_videos'.tr(),
                           style: TextStyle(color: Colors.grey[600])),
                       const SizedBox(height: 8),
-                      Text('اضغط على زر الإضافة لرفع أول فيديو',
+                      Text('videos_screen.add_first_video'.tr(),
                           style:
                               TextStyle(color: Colors.grey[500], fontSize: 12)),
                     ],
@@ -98,13 +99,13 @@ class _StudentVideosScreenState extends State<StudentVideosScreen> {
                       onPressed: () => context
                           .read<VideoUploadCubit>()
                           .fetchVideosByCourse(widget.courseId),
-                      child: const Text('إعادة المحاولة'),
+                      child: Text('videos_screen.retry'.tr()),
                     ),
                   ],
                 ),
               );
             }
-            return const Center(child: Text('جاري تحميل البيانات...'));
+            return Center(child: Text('videos_screen.loading_data'.tr()));
           },
         ),
       ),
@@ -223,9 +224,7 @@ class _StudentVideosScreenState extends State<StudentVideosScreen> {
                                 size: 14, color: Colors.grey),
                             const SizedBox(width: 4),
                             Text(
-                              _formatDuration(
-                                  // video.duration ??
-                                  '00:00'),
+                              _formatDuration('00:00'),
                               style: TextStyle(
                                   color: Colors.grey[600], fontSize: 12),
                             ),

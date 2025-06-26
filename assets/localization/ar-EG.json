@@ -122,5 +122,67 @@
     "ready_to_upload": "جاهز للرفع",
     "fill_all_fields": "الرجاء ملء جميع الحقول",
     "upload_button": "رفع الفيديو"
+  },
+  "course_details": {
+    "general_category": "عام",
+    "price": "السعر",
+    "created": "تم الإنشاء",
+    "description_title": "وصف الدورة",
+    "no_description": "لا يوجد وصف متاح",
+    "checking_access": "جاري التحقق من صلاحياتك...",
+    "access_content": "الوصول إلى محتوى الدورة",
+    "videos": "الفيديوهات",
+    "files": "الملفات",
+    "premium_locked": "المحتوى المميز مغلق",
+    "subscribe_message": "اشترك للوصول إلى جميع مقاطع الفيديو والمواد الخاصة بهذه الدورة",
+    "subscribe_now": "اشترك الآن",
+    "whatsapp_message": "مرحبا، أريد شراء دورة التي تبلغ تكلفتها ",
+    "whatsapp_error": "تعذر فتح واتساب",
+    "premium_content": "محتوى مميز",
+    "not_now": "ليس الآن",
+    "purchase": "شراء"
+  },
+  "videos_screen": {
+    "video_library": "مكتبة الفيديوهات",
+    "no_videos": "لا توجد فيديوهات متاحة بعد",
+    "add_first_video": "اضغط على زر الإضافة لرفع أول فيديو",
+    "retry": "إعادة المحاولة",
+    "loading_data": "جاري تحميل البيانات...",
+    "delete_video_title": "حذف الفيديو",
+    "delete_video_content": "هل أنت متأكد أنك تريد حذف هذا الفيديو؟",
+    "cancel": "إلغاء",
+    "delete": "حذف",
+    "video_deleted": "تم حذف الفيديو بنجاح"
+  },
+  "no_notifications":"لا توجد إشعارات",
+  "edit_course": {
+    "title": "تعديل الدورة",
+    "course_name": "اسم الدورة",
+    "enter_course_name": "أدخل اسم الدورة هنا",
+    "price": "السعر",
+    "enter_price": "أدخل سعر الدورة",
+    "category": "القسم",
+    "enter_category": "أدخل القسم",
+    "description": "الوصف",
+    "enter_description": "أدخل وصف الدورة هنا",
+    "update_button": "تحديث الدورة",
+    "updating": "جاري التحديث...",
+    "update_success": "تم تحديث الدورة بنجاح!",
+    "update_error": "حدث خطأ أثناء التحديث",
+    "upload_image": "اضغط لرفع صورة الدورة",
+    "image_formats": "(JPEG, PNG)"
+  },
+  
+  "file_upload": {
+    "title": "رفع مواد الدورة",
+    "add_material": "إضافة مادة جديدة",
+    "course_id": "معرف الدورة: {0}",
+    "tap_to_select": "انقر لاختيار ملف",
+    "selected_file": "الملف المحدد",
+    "upload_button": "رفع الملف",
+    "uploading": "جاري رفع الملف...",
+    "success": "تم رفع الملف بنجاح!",
+    "failure": "فشل الرفع: {0}",
+    "error_picking_file": "خطأ في اختيار الملف: {0}"
   }
 }

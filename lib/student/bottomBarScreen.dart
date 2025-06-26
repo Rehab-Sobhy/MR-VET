@@ -1,5 +1,6 @@
 import 'package:education_app/settings/settingsScreen.dart';
 import 'package:education_app/student/subsecribtionWidget.dart';
+import 'package:education_app/student/subsecription.dart';
 import 'package:flutter/material.dart';
 
 import 'package:education_app/student/studentHomeScreen.dart';
@@ -22,7 +23,7 @@ class _BottomBarScreenState extends State<BottomBarScreen> {
   final List<Widget> _screens = [
     StudentHomeScreen(),
     NotificationsScreen(),
-    Subsecribtionwidget(),
+    Subsecriptions(),
     SettingsScreen(),
   ];
 

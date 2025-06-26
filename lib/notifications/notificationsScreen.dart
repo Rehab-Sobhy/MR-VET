@@ -36,8 +36,8 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
             return const Center(child: CircularProgressIndicator());
           } else if (state is NotificationLoaded) {
             if (state.notifications.isEmpty) {
-              return const Center(
-                child: Text('لا توجد إشعارات'),
+              return Center(
+                child: Text("no_notifications".tr()),
               );
             }
             return RefreshIndicator(

@@ -1,60 +1,65 @@
+import 'package:education_app/constants/apiKey.dart';
 import 'package:education_app/constants/colors.dart';
 import 'package:education_app/constants/widgets/mainButton.dart';
-import 'package:education_app/instructor/Materilas.dart';
 import 'package:education_app/instructor/courses_Videos.dart';
+import 'package:education_app/student/enrollment_states.dart';
+
 import 'package:education_app/student/materials.dart';
 import 'package:education_app/student/studentCubit.dart';
 import 'package:education_app/student/coursesModel.dart';
 import 'package:education_app/student/courses_states.dart';
-
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:gap/gap.dart';
-import 'package:intl/intl.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-class CourseDetailsScreen extends StatelessWidget {
+import 'enrollcubit.dart';
+
+class StudentCourseDetailsScreen extends StatefulWidget {
   final CourseModel course;
 
-  const CourseDetailsScreen({Key? key, required this.course}) : super(key: key);
+  const StudentCourseDetailsScreen({Key? key, required this.course})
+      : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
-    // Check enrollment status when screen opens
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      context.read<StudentCubit>().checkEnrollment(course);
-    });
+  State<StudentCourseDetailsScreen> createState() =>
+      _StudentCourseDetailsScreenState();
+}
 
-    return BlocListener<StudentCubit, CourseState>(
-      listener: (context, state) {
-        if (state is CourseEnrollmentForbidden &&
-            state.course.id == course.id) {
-          _showPurchaseDialog(context, state.message);
-        }
-      },
-      child: Scaffold(
-        backgroundColor: Colors.white,
-        body: CustomScrollView(
-          slivers: [
-            _buildAppBar(context),
-            SliverToBoxAdapter(
-              child: Padding(
-                padding: EdgeInsets.all(16.w),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    SizedBox(height: 24.h),
-                    _buildInfoCard(),
-                    SizedBox(height: 24.h),
-                    _buildCourseDescription(),
-                    SizedBox(height: 24.h),
-                    _buildContentAccessSection(context),
-                  ],
+class _StudentCourseDetailsScreenState
+    extends State<StudentCourseDetailsScreen> {
+  @override
+  Widget build(BuildContext context) {
+    return BlocProvider(
+      create: (_) => EnrollmentCubit()..checkEnrollment(widget.course),
+      child: BlocListener<EnrollmentCubit, EnrollmentState>(
+        listener: (context, state) {
+          if (state is EnrollmentForbidden) {
+            _showPurchaseDialog(context, state.message);
+          }
+        },
+        child: Scaffold(
+          backgroundColor: Colors.white,
+          body: CustomScrollView(
+            slivers: [
+              _buildAppBar(context),
+              SliverToBoxAdapter(
+                child: Padding(
+                  padding: EdgeInsets.all(16),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      _buildInfoCard(),
+                      _buildCourseDescription(),
+                      _buildContentAccessSection(context),
+                    ],
+                  ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
@@ -65,27 +70,30 @@ class CourseDetailsScreen extends StatelessWidget {
       expandedHeight: 0.4.sh,
       flexibleSpace: FlexibleSpaceBar(
         background: Hero(
-          tag: 'course-${course.id}',
+          tag: 'course-${widget.course.id}',
           child: Stack(
             children: [
-              course.courseImage != null
-                  ? Image.network(
-                      course.courseImage!,
-                      fit: BoxFit.cover,
-                      errorBuilder: (context, error, stackTrace) => Container(
-                        color: Colors.grey[300],
-                        child: const Center(
-                          child: Icon(
-                            Icons.broken_image,
-                            size: 50,
-                            color: Colors.grey,
+              widget.course.courseImage != null
+                  ? Container(
+                      width: double.infinity,
+                      child: Image.network(
+                        "$baseUrlKey/${widget.course.courseImage!}",
+                        fit: BoxFit.fill,
+                        errorBuilder: (context, error, stackTrace) => Container(
+                          color: Colors.grey[300],
+                          child: Center(
+                            child: Icon(
+                              Icons.broken_image,
+                              size: 50,
+                              color: Colors.grey,
+                            ),
                           ),
                         ),
                       ),
                     )
                   : Container(
                       color: Colors.grey[300],
-                      child: const Center(
+                      child: Center(
                         child: Icon(
                           Icons.image,
                           size: 50,
@@ -119,7 +127,8 @@ class CourseDetailsScreen extends StatelessWidget {
                         borderRadius: BorderRadius.circular(4.r),
                       ),
                       child: Text(
-                        course.category ?? 'General',
+                        widget.course.category ??
+                            'course_details.general_category'.tr(),
                         style: TextStyle(
                           fontSize: 12.sp,
                           color: Colors.white,
@@ -128,9 +137,9 @@ class CourseDetailsScreen extends StatelessWidget {
                     ),
                     SizedBox(height: 8.h),
                     Text(
-                      course.title,
+                      widget.course.title,
                       style: TextStyle(
-                        fontSize: 24.sp,
+                        fontSize: 16,
                         fontWeight: FontWeight.bold,
                         color: Colors.white,
                       ),
@@ -153,7 +162,7 @@ class CourseDetailsScreen extends StatelessWidget {
           child: Icon(
             Icons.arrow_back,
             color: Colors.white,
-            size: 20.sp,
+            size: 18,
           ),
         ),
         onPressed: () => Navigator.pop(context),
@@ -171,24 +180,17 @@ class CourseDetailsScreen extends StatelessWidget {
       padding: EdgeInsets.all(16.w),
       child: Column(
         children: [
-          // Row(
-          //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          //   children: [
-          //     _buildInfoItem(Icons.schedule, 'Duration', '10 Hours'),
-          //     _buildInfoItem(Icons.video_library, 'Lectures', '24 Videos'),
-          //     _buildInfoItem(Icons.bar_chart, 'Level', 'Intermediate'),
-          //   ],divid
-          // ),
-          SizedBox(height: 16.h),
-
-          SizedBox(height: 16.h),
+          SizedBox(height: 16),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              _buildInfoItem(Icons.attach_money, 'Price', '\$${course.price}'),
+              _buildInfoItem(Icons.attach_money, 'course_details.price'.tr(),
+                  '\LE ${widget.course.price}'),
               Divider(height: 1, color: Colors.grey[300]),
-              _buildInfoItem(Icons.calendar_today, 'Created',
-                  DateFormat('MMM yyyy').format(course.createdAt)),
+              _buildInfoItem(
+                  Icons.calendar_today,
+                  'course_details.created'.tr(),
+                  DateFormat('MMM yyyy').format(widget.course.createdAt)),
             ],
           ),
         ],
@@ -204,7 +206,7 @@ class CourseDetailsScreen extends StatelessWidget {
         Text(
           label,
           style: TextStyle(
-            fontSize: 12.sp,
+            fontSize: 12,
             color: Colors.grey[600],
           ),
         ),
@@ -212,7 +214,7 @@ class CourseDetailsScreen extends StatelessWidget {
         Text(
           value,
           style: TextStyle(
-            fontSize: 14.sp,
+            fontSize: 14,
             fontWeight: FontWeight.bold,
           ),
         ),
@@ -225,18 +227,18 @@ class CourseDetailsScreen extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'Course Description',
+          'course_details.description_title'.tr(),
           style: TextStyle(
-            fontSize: 20.sp,
+            fontSize: 16,
             fontWeight: FontWeight.bold,
             color: primaryColor,
           ),
         ),
-        SizedBox(height: 12.h),
+        SizedBox(height: 5),
         Text(
-          course.description ?? 'No description available',
+          widget.course.description ?? 'course_details.no_description'.tr(),
           style: TextStyle(
-            fontSize: 16.sp,
+            fontSize: 12,
             color: Colors.grey[700],
             height: 1.5,
           ),
@@ -246,18 +248,18 @@ class CourseDetailsScreen extends StatelessWidget {
   }
 
   Widget _buildContentAccessSection(BuildContext context) {
-    return BlocBuilder<StudentCubit, CourseState>(
+    return BlocBuilder<EnrollmentCubit, EnrollmentState>(
       builder: (context, state) {
-        if (state is CourseEnrollmentLoading) {
+        if (state is EnrollmentLoading) {
           return Center(
             child: Column(
               children: [
                 CircularProgressIndicator(color: primaryColor),
-                SizedBox(height: 16.h),
+                SizedBox(height: 20),
                 Text(
-                  'Checking your access...',
+                  'course_details.checking_access'.tr(),
                   style: TextStyle(
-                    fontSize: 16.sp,
+                    fontSize: 16,
                     color: Colors.grey[600],
                   ),
                 ),
@@ -266,12 +268,11 @@ class CourseDetailsScreen extends StatelessWidget {
           );
         }
 
-        // If user is subscribed, show content access buttons
-        if (state is CourseEnrollmentSuccess && state.course.id == course.id) {
+        if (state is EnrollmentSuccess) {
           return _buildContentButtons(context);
         }
 
-        // If user is not subscribed, show subscription button
+        // Show subscribe button for EnrollmentForbidden or other states
         return _buildSubscribeButton(context);
       },
     );
@@ -280,10 +281,11 @@ class CourseDetailsScreen extends StatelessWidget {
   Widget _buildContentButtons(BuildContext context) {
     return Column(
       children: [
+        Gap(10),
         Text(
-          'Access your course content',
+          'course_details.access_content'.tr(),
           style: TextStyle(
-            fontSize: 18.sp,
+            fontSize: 17,
             fontWeight: FontWeight.bold,
             color: primaryColor,
           ),
@@ -294,15 +296,15 @@ class CourseDetailsScreen extends StatelessWidget {
             Expanded(
               child: _buildActionButton(
                 icon: Icons.video_library,
-                label: "Videos",
+                label: "course_details.videos".tr(),
                 color: Colors.blue,
                 onPressed: () {
                   Navigator.push(
                       context,
                       MaterialPageRoute(
                           builder: (context) => VideosScreen(
-                                courseId: course.id,
-                                courseTitle: course.title,
+                                courseId: widget.course.id,
+                                courseTitle: widget.course.title,
                               )));
                 },
               ),
@@ -311,14 +313,14 @@ class CourseDetailsScreen extends StatelessWidget {
             Expanded(
               child: _buildActionButton(
                 icon: Icons.insert_drive_file,
-                label: "Files",
+                label: "course_details.files".tr(),
                 color: Colors.purple,
                 onPressed: () {
                   Navigator.push(
                       context,
                       MaterialPageRoute(
                           builder: (context) => StudentMaterialsScreen(
-                                courseId: course.id,
+                                courseId: widget.course.id,
                               )));
                 },
               ),
@@ -344,19 +346,19 @@ class CourseDetailsScreen extends StatelessWidget {
               Icon(Icons.lock, size: 40.sp, color: Colors.orange),
               SizedBox(height: 12.h),
               Text(
-                'Premium Content Locked',
+                'course_details.premium_locked'.tr(),
                 style: TextStyle(
-                  fontSize: 18.sp,
+                  fontSize: 16,
                   fontWeight: FontWeight.bold,
                   color: Colors.orange[800],
                 ),
               ),
               SizedBox(height: 8.h),
               Text(
-                'Subscribe to access all videos and materials for this course',
+                'course_details.subscribe_message'.tr(),
                 textAlign: TextAlign.center,
                 style: TextStyle(
-                  fontSize: 14.sp,
+                  fontSize: 14,
                   color: Colors.grey[700],
                 ),
               ),
@@ -365,7 +367,7 @@ class CourseDetailsScreen extends StatelessWidget {
         ),
         SizedBox(height: 16.h),
         MainButton(
-          text: 'Subscribe Now',
+          text: 'course_details.subscribe_now'.tr(),
           onTap: () => _launchWhatsApp(context),
           backGroundColor: primaryColor,
           textColor: Colors.white,
@@ -387,7 +389,7 @@ class CourseDetailsScreen extends StatelessWidget {
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(12.r),
         ),
-        elevation: 4,
+        // elevation: 4,
       ),
       onPressed: onPressed,
       child: Row(
@@ -400,7 +402,7 @@ class CourseDetailsScreen extends StatelessWidget {
             style: TextStyle(
               color: Colors.white,
               fontWeight: FontWeight.bold,
-              fontSize: 16.sp,
+              fontSize: 14,
             ),
           ),
         ],
@@ -409,16 +411,17 @@ class CourseDetailsScreen extends StatelessWidget {
   }
 
   Future<void> _launchWhatsApp(BuildContext context) async {
-    final String phoneNumber = "+201147521742";
+    final String phoneNumber = "+201146607873";
     final String message =
-        "مرحبا اريد شراء كورس ${course.title} اللذي يبلغ سعره \$${course.price}.";
+        "مرحبًا، أرغب بالتسجيل في دورة \"${widget.course.title}\" والتي يبلغ سعرها ${widget.course.price} ج.م. هل يمكنني معرفة خطوات التسجيل؟"
+            .tr(args: [widget.course.title, widget.course.price.toString()]);
     final String url =
         "https://wa.me/$phoneNumber?text=${Uri.encodeComponent(message)}";
 
     if (!await launchUrl(Uri.parse(url),
         mode: LaunchMode.externalApplication)) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Could not launch WhatsApp')),
+        SnackBar(content: Text('course_details.whatsapp_error'.tr())),
       );
     }
   }
@@ -448,14 +451,14 @@ class CourseDetailsScreen extends StatelessWidget {
             children: [
               Icon(
                 Icons.lock_outline,
-                size: 60.sp,
+                size: 50,
                 color: primaryColor,
               ),
-              SizedBox(height: 16.h),
+              SizedBox(height: 16),
               Text(
-                'Premium Content',
+                'course_details.premium_content'.tr(),
                 style: TextStyle(
-                  fontSize: 22.sp,
+                  fontSize: 16,
                   fontWeight: FontWeight.bold,
                   color: primaryColor,
                 ),
@@ -465,11 +468,11 @@ class CourseDetailsScreen extends StatelessWidget {
                 message,
                 textAlign: TextAlign.center,
                 style: TextStyle(
-                  fontSize: 16.sp,
+                  fontSize: 16,
                   color: Colors.grey[700],
                 ),
               ),
-              SizedBox(height: 24.h),
+              SizedBox(height: 24),
               Row(
                 children: [
                   Expanded(
@@ -483,9 +486,9 @@ class CourseDetailsScreen extends StatelessWidget {
                         ),
                       ),
                       child: Text(
-                        'Not Now',
+                        'course_details.not_now'.tr(),
                         style: TextStyle(
-                          fontSize: 16.sp,
+                          fontSize: 16,
                           color: primaryColor,
                         ),
                       ),
@@ -506,9 +509,9 @@ class CourseDetailsScreen extends StatelessWidget {
                         ),
                       ),
                       child: Text(
-                        'Purchase',
+                        'course_details.purchase'.tr(),
                         style: TextStyle(
-                          fontSize: 16.sp,
+                          fontSize: 16,
                           color: Colors.white,
                         ),
                       ),

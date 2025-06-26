@@ -6,7 +6,7 @@ import 'package:education_app/instructor/materialstates.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:http_parser/http_parser.dart';
-import 'package:path/path.dart';
+import 'package:path_provider/path_provider.dart';
 
 class MaterialsCubit extends Cubit<MaterialsState> {
   final Dio _dio = Dio();
@@ -29,7 +29,7 @@ class MaterialsCubit extends Cubit<MaterialsState> {
     final token = await authService.getToken();
     try {
       final response = await _dio.post(
-        'https://mrvet-production.up.railway.app/api/courses/$courseId/add-subject',
+        'https://mrvet-production.up.railway.app/api/materials/$courseId',
         data: formData,
         options: Options(
           headers: {
@@ -80,11 +80,22 @@ class MaterialsCubit extends Cubit<MaterialsState> {
 
   Future<void> downloadFile(
     String url,
-    String savePath, {
+    String fileName, {
     required BuildContext context,
   }) async {
     final authService = AuthServiceClass();
     final token = await authService.getToken();
+
+    if (token == null || url.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('حدث خطأ في تحميل الملف. الرجاء المحاولة لاحقًا.'),
+          backgroundColor: Colors.red,
+        ),
+      );
+      return;
+    }
+
     if (state is! MaterialsSuccess) return;
 
     final successState = state as MaterialsSuccess;
@@ -94,12 +105,16 @@ class MaterialsCubit extends Cubit<MaterialsState> {
       progressMap[url] = 0.0;
       emit(successState.copyWith(downloadProgress: progressMap));
 
+      // 🔐 Get app-internal directory
+      final directory = await getApplicationDocumentsDirectory();
+      final savePath = '${directory.path}/$fileName';
+
       print('⬇️ Starting download...');
       print('🔗 URL: $url');
       print('📁 Save Path: $savePath');
       print('🔐 Authorization: Bearer $token');
 
-      await _dio.download(
+      final response = await _dio.download(
         url,
         savePath,
         options: Options(headers: {
@@ -116,30 +131,44 @@ class MaterialsCubit extends Cubit<MaterialsState> {
 
       progressMap.remove(url);
       emit(successState.copyWith(downloadProgress: progressMap));
+
       print('✅ Download complete!');
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('تم تحميل الملف بنجاح!'),
+          backgroundColor: Colors.green,
+        ),
+      );
     } on DioException catch (e) {
       progressMap.remove(url);
       emit(successState.copyWith(downloadProgress: progressMap));
 
       print('❌ Error downloading file: ${e.message}');
-      print('📦 Status code: ${e.response?.statusCode}');
-      print('📨 Response data: ${e.response?.data}');
-      print('📤 Request URL: $url');
-
+      String errorMessage = 'فشل تحميل الملف. الرجاء المحاولة لاحقًا.';
       if (e.response?.statusCode == 404) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('الملف غير موجود. الرجاء المحاولة لاحقًا.'),
-            backgroundColor: Colors.red,
-          ),
-        );
+        errorMessage = 'الملف غير موجود. تأكد من الرابط أو تواصل مع الدعم.';
       }
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(errorMessage),
+          backgroundColor: Colors.red,
+        ),
+      );
 
       rethrow;
     } catch (e) {
       progressMap.remove(url);
       emit(successState.copyWith(downloadProgress: progressMap));
+
       print('❗ Unexpected error: $e');
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('حدث خطأ غير متوقع أثناء تحميل الملف.'),
+          backgroundColor: Colors.red,
+        ),
+      );
+
       rethrow;
     }
   }
@@ -147,7 +176,7 @@ class MaterialsCubit extends Cubit<MaterialsState> {
   String getFileType(String filePath) {
     final extension = filePath.split('.').last.toLowerCase();
     if (extension == 'pdf') return 'pdf';
-    if (['jpg', 'jpeg', 'png'].contains(extension)) return 'image';
+
     if (['doc', 'docx'].contains(extension)) return 'word';
     if (['ppt', 'pptx'].contains(extension)) return 'powerpoint';
     if (['xls', 'xlsx'].contains(extension)) return 'excel';

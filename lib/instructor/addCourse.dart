@@ -3,6 +3,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:education_app/instructor/InscoursesCubit.dart';
 import 'package:education_app/constants/colors.dart';
 import 'package:education_app/constants/widgets/mainButton.dart';
+import 'package:education_app/instructor/instructorHomeScreen.dart';
 import 'package:education_app/student/courses_states.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -127,7 +128,7 @@ class _AddCourseScreenState extends State<AddCourseScreen> {
             _buildTextField(_priceController,
                 hint: 'enter_price'.tr(),
                 keyboardType: TextInputType.number,
-                prefixIcon: Iconsax.dollar_circle),
+                prefixIcon: Iconsax.money),
             const Gap(16),
 
             // Category Field
@@ -168,7 +169,8 @@ class _AddCourseScreenState extends State<AddCourseScreen> {
                       backgroundColor: Colors.green,
                     ),
                   );
-                  Navigator.pop(context);
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (context) => InsHomeScreen()));
                 } else if (state is AddCourseFaild) {
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(
@@ -183,6 +185,14 @@ class _AddCourseScreenState extends State<AddCourseScreen> {
                 }
               },
               builder: (context, state) {
+                if (state is AddCourseLoading) {
+                  return Center(
+                    child: CircularProgressIndicator(
+                      color: primaryColor,
+                    ),
+                  );
+                }
+
                 return MainButton(
                   backGroundColor: primaryColor,
                   text: "add_course".tr(),

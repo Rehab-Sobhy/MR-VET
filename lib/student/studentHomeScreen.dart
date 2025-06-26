@@ -225,13 +225,16 @@ class _StudentHomeScreenState extends State<StudentHomeScreen> {
 
   Widget _buildCourseCard(dynamic course, BuildContext context) {
     return InkWell(
-      onTap: () {
-        Navigator.push(
+      onTap: () async {
+        final result = await Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (_) => CourseDetailsScreen(course: course),
+            builder: (_) => StudentCourseDetailsScreen(course: course),
           ),
         );
+        if (result == true && mounted) {
+          context.read<StudentCubit>().resetToCourses();
+        }
       },
       child: Container(
         decoration: BoxDecoration(
@@ -299,7 +302,7 @@ class _StudentHomeScreenState extends State<StudentHomeScreen> {
                           borderRadius: BorderRadius.circular(4),
                         ),
                         child: Text(
-                          "${course.price} \$",
+                          "${course.price} \LE",
                           style: const TextStyle(
                             color: Colors.green,
                             fontWeight: FontWeight.bold,

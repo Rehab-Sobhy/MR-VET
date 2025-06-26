@@ -1,4 +1,6 @@
 import 'dart:io';
+import 'package:easy_localization/easy_localization.dart';
+import 'package:education_app/auth/login/login_screen.dart';
 import 'package:education_app/auth/services.dart';
 import 'package:education_app/constants/apiKey.dart';
 import 'package:education_app/settings/cubitofUser.dart';
@@ -96,8 +98,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   Text(state.message),
                   const Gap(20),
                   ElevatedButton(
-                    onPressed: _loadUserProfile,
-                    child: const Text('Retry'),
+                    onPressed: () => Navigator.pushReplacement(context,
+                        MaterialPageRoute(builder: (context) => LoginScreen())),
+                    child: Text('login'.tr()),
                   ),
                 ],
               ),
@@ -257,19 +260,19 @@ class _ProfileScreenState extends State<ProfileScreen> {
             value: user['_id'] ?? 'unknown',
           ),
           const Gap(20),
-          SizedBox(
-            width: double.infinity,
-            child: ElevatedButton(
-              onPressed: () => _navigateToEditProfile(context),
-              style: ElevatedButton.styleFrom(
-                padding: const EdgeInsets.symmetric(vertical: 16),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
-                ),
-              ),
-              child: const Text('Edit Profile'),
-            ),
-          ),
+          // SizedBox(
+          //   width: double.infinity,
+          //   child: ElevatedButton(
+          //     onPressed: () => _navigateToEditProfile(context),
+          //     style: ElevatedButton.styleFrom(
+          //       padding: const EdgeInsets.symmetric(vertical: 16),
+          //       shape: RoundedRectangleBorder(
+          //         borderRadius: BorderRadius.circular(12),
+          //       ),
+          //     ),
+          //     child: const Text('Edit Profile'),
+          //   ),
+          // ),
         ],
       ),
     );

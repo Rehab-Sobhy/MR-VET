@@ -143,5 +143,65 @@
     "ready_to_upload": "Ready to upload",
     "fill_all_fields": "Please fill all fields",
     "upload_button": "Upload Video"
+  },
+  "course_details": {
+    "general_category": "General",
+    "price": "Price",
+    "created": "Created",
+    "description_title": "Course Description",
+    "no_description": "No description available",
+    "checking_access": "Checking your access...",
+    "access_content": "Access your course content",
+    "videos": "Videos",
+    "files": "Files",
+    "premium_locked": "Premium Content Locked",
+    "subscribe_message": "Subscribe to access all videos and materials for this course",
+    "subscribe_now": "Subscribe Now",
+    "whatsapp_message": "Hello, I want to purchase the {0} course which costs ",
+    "whatsapp_error": "Could not launch WhatsApp",
+    "premium_content": "Premium Content",
+    "not_now": "Not Now",
+    "purchase": "Purchase"
+  },
+  "videos_screen": {
+    "video_library": "Video Library",
+    "no_videos": "No videos available yet",
+    "add_first_video": "Click the add button to upload the first video",
+    "retry": "Try Again",
+    "loading_data": "Loading data...",
+    "delete_video_title": "Delete Video",
+    "delete_video_content": "Are you sure you want to delete this video?",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "video_deleted": "Video deleted successfully"
+  },
+
+  "no_notifications":"No Notifications ", "edit_course": {
+    "title": "Edit Course",
+    "course_name": "Course Name",
+    "enter_course_name": "Enter course name here",
+    "price": "Price",
+    "enter_price": "Enter course price",
+    "category": "Category",
+    "enter_category": "Enter category",
+    "description": "Description",
+    "enter_description": "Enter course description here",
+    "update_button": "Update Course",
+    "updating": "Updating...",
+    "update_success": "Course updated successfully!",
+    "update_error": "Error occurred while updating",
+    "upload_image": "Tap to upload course image",
+    "image_formats": "(JPEG, PNG)"
+  }, "file_upload": {
+    "title": "Enviar Material do Curso",
+    "add_material": "Adicionar Novo Material",
+    "course_id": "ID do Curso: {0}",
+    "tap_to_select": "Toque para selecionar um arquivo",
+    "selected_file": "Arquivo Selecionado",
+    "upload_button": "Enviar Arquivo",
+    "uploading": "Enviando seu arquivo...",
+    "success": "Arquivo enviado com sucesso!",
+    "failure": "Falha no envio: {0}",
+    "error_picking_file": "Erro ao selecionar arquivo: {0}"
   }
 }

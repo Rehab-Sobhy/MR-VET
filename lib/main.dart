@@ -1,6 +1,7 @@
 import 'package:education_app/auth/register/cubit.dart';
+import 'package:education_app/student/subsercriptions_cubit.dart';
 
-import 'package:education_app/getAllinstrucorsData.dart/cubit.dart';
+import 'package:education_app/student/getAllinstrucorsData.dart/cubit.dart';
 import 'package:education_app/instructor/InscoursesCubit.dart';
 import 'package:education_app/instructor/cubit_of_Materials.dart';
 
@@ -61,12 +62,17 @@ class MyApp extends StatelessWidget {
         BlocProvider(create: (context) => MaterialsCubit()),
         BlocProvider(create: (context) => ProfileCubit()),
         BlocProvider(create: (context) => NotificationCubit()),
+        BlocProvider(create: (context) => EnrolledCoursesCubit()),
       ],
       child: ScreenUtilInit(
         designSize: const Size(360, 690),
         minTextAdapt: true,
         splitScreenMode: true,
         child: MaterialApp(
+          theme: ThemeData(
+            scaffoldBackgroundColor:
+                Colors.white, // ← اللون الموحد لكل Scaffold
+          ),
           debugShowCheckedModeBanner: false,
           localizationsDelegates: context.localizationDelegates,
           supportedLocales: context.supportedLocales,

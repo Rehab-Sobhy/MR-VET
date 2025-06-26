@@ -18,34 +18,6 @@ class CourseError extends CourseState {
   CourseError(this.message);
 }
 
-class CourseEnrollmentLoading extends CourseState {}
-
-class CourseEnrollmentSuccess extends CourseState {
-  final CourseModel course;
-
-  CourseEnrollmentSuccess(this.course);
-}
-
-class CourseEnrollmentForbidden extends CourseState {
-  final CourseModel course;
-  final String message;
-
-  CourseEnrollmentForbidden({
-    required this.course,
-    required this.message,
-  });
-}
-
-class CourseEnrollmentError extends CourseState {
-  final CourseModel course;
-  final String message;
-
-  CourseEnrollmentError({
-    required this.course,
-    required this.message,
-  });
-}
-
 class MyCourseLoading extends CourseState {}
 
 class MyCourseSuccess extends CourseState {

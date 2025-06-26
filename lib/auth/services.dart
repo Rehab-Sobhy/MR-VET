@@ -1,3 +1,8 @@
+import 'package:education_app/auth/login/login_cubit.dart';
+import 'package:education_app/auth/login/login_screen.dart';
+import 'package:education_app/settings/cubitofUser.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -32,13 +37,14 @@ class AuthServiceClass {
     return prefs.getString(currentRoleKey);
   }
 
-  Future<void> logout() async {
+  Future<void> logout(BuildContext context) async {
     final prefs = await SharedPreferences.getInstance();
     final token = await getToken();
+    final role = await getCurrentRole();
 
-    // Call API logout with DELETE
     final url =
         Uri.parse('https://mrvet-production.up.railway.app/api/auth/logout');
+
     try {
       final response = await http.post(
         url,
@@ -47,20 +53,28 @@ class AuthServiceClass {
           'Content-Type': 'application/json',
         },
       );
-
-      if (response.statusCode == 200 || response.statusCode == 201) {
-        final role = await getCurrentRole();
-        if (role == 'student') {
-          await prefs.remove(studentTokenKey);
-        } else if (role == 'instructor') {
-          await prefs.remove(teacherTokenKey);
-        }
-        await prefs.remove(currentRoleKey);
-      } else {
-        throw Exception('Failed to logout: ${response.statusCode}');
-      }
+      print("Logout API status: ${response.statusCode}");
     } catch (e) {
-      throw Exception('Logout error: $e');
+      print("Logout API failed: $e");
+    } finally {
+      // Clear all relevant shared preferences
+      await prefs.remove(studentTokenKey);
+      await prefs.remove(teacherTokenKey);
+      await prefs.remove(currentRoleKey);
+
+      // Clear any other cached data
+      await prefs.clear(); // Optional: clears ALL shared preferences
+
+      // Reset all BLoCs/Cubits
+      context.read<LoginCubit>().reset();
+      context.read<ProfileCubit>().reset();
+
+      // Navigate to login screen and remove all routes
+      Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(builder: (context) => LoginScreen()),
+        (route) => false,
+      );
     }
   }
 }

@@ -3,6 +3,8 @@ import 'package:education_app/auth/choooseRoleToAuth.dart';
 import 'package:education_app/auth/login/login_cubit.dart';
 import 'package:education_app/auth/login/login_states.dart';
 import 'package:education_app/auth/services.dart';
+import 'package:education_app/settings/cubitofUser.dart';
+import 'package:education_app/settings/statesofuser.dart';
 import 'package:education_app/student/bottomBarScreen.dart';
 import 'package:education_app/instructor/instructorHomeScreen.dart';
 import 'package:education_app/constants/colors.dart';
@@ -207,13 +209,15 @@ class _LoginScreenState extends State<LoginScreen> {
                                 ),
                               )
                             : MainButton(
-                                onTap: () {
+                                onTap: () async {
                                   if (emailController.text.isNotEmpty &&
                                       passwordController.text.isNotEmpty) {
                                     context.read<LoginCubit>().login(
                                           emailController.text,
                                           passwordController.text,
                                         );
+
+                                    await _loadUserProfile();
                                   } else {
                                     ScaffoldMessenger.of(context).showSnackBar(
                                       SnackBar(
@@ -283,21 +287,21 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
-  Widget _buildSocialIcon(IconData icon, VoidCallback onTap) {
-    return InkWell(
-      onTap: onTap,
-      child: Container(
-        padding: const EdgeInsets.all(12),
-        decoration: BoxDecoration(
-          shape: BoxShape.circle,
-          border: Border.all(color: Colors.grey.shade300),
-        ),
-        child: Icon(
-          icon,
-          size: 24,
-          color: primaryColor,
-        ),
-      ),
-    );
+  String? userName;
+  Future<void> _loadUserProfile() async {
+    // تأكد من أن الـ widget ما زال mounted قبل استخدام context
+    if (!mounted) return;
+
+    await context.read<ProfileCubit>().fetchUserProfile();
+
+    // تحقق مرة أخرى بعد await لأن الـ widget ممكن يكون Unmounted أثناء الانتظار
+    if (!mounted) return;
+
+    final state = context.read<ProfileCubit>().state;
+    if (state is ProfileLoaded) {
+      setState(() {
+        userName = state.userData['user']['name'] ?? "User";
+      });
+    }
   }
 }

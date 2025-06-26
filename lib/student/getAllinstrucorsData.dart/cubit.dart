@@ -1,5 +1,5 @@
-import 'package:education_app/getAllinstrucorsData.dart/model.dart';
-import 'package:education_app/getAllinstrucorsData.dart/states.dart';
+import 'package:education_app/student/getAllinstrucorsData.dart/model.dart';
+import 'package:education_app/student/getAllinstrucorsData.dart/states.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:dio/dio.dart';

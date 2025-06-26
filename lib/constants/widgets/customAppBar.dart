@@ -36,9 +36,16 @@ class _CustomAppBarState extends State<CustomAppBar> {
   }
 
   Future<void> _loadUserProfile() async {
+    // تأكد من أن الـ widget ما زال mounted قبل استخدام context
+    if (!mounted) return;
+
     await context.read<ProfileCubit>().fetchUserProfile();
+
+    // تحقق مرة أخرى بعد await لأن الـ widget ممكن يكون Unmounted أثناء الانتظار
+    if (!mounted) return;
+
     final state = context.read<ProfileCubit>().state;
-    if (state is ProfileLoaded && mounted) {
+    if (state is ProfileLoaded) {
       setState(() {
         userName = state.userData['user']['name'] ?? "User";
       });

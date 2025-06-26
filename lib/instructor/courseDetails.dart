@@ -2,6 +2,7 @@ import 'package:education_app/instructor/InscoursesCubit.dart';
 import 'package:education_app/instructor/Materilas.dart';
 import 'package:education_app/instructor/courses_Videos.dart';
 import 'package:education_app/instructor/editCourse.dart';
+import 'package:education_app/instructor/instructorHomeScreen.dart';
 import 'package:education_app/instructor/uploadVideao.dart';
 import 'package:education_app/instructor/upload_Materials.dart';
 import 'package:education_app/student/courses_states.dart';
@@ -13,7 +14,6 @@ import 'package:easy_localization/easy_localization.dart';
 
 class CourseDetailsScreen extends StatefulWidget {
   final dynamic course;
-
   const CourseDetailsScreen({super.key, required this.course});
 
   @override
@@ -28,328 +28,332 @@ class _CourseDetailsScreenState extends State<CourseDetailsScreen> {
     final theme = Theme.of(context);
     final size = MediaQuery.of(context).size;
 
-    return BlocListener<InstructorCoursesCubit, CourseState>(
-      listener: (context, state) {
-        if (state is DeleteCourseSuccess) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text("course.delete_success".tr()),
-              backgroundColor: Colors.green,
-            ),
-          );
-          Navigator.pop(context);
-        }
-        if (state is DeleteCoursefiled) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text("course.delete_failed".tr()),
-              backgroundColor: Colors.red,
-            ),
-          );
-        }
-      },
-      child: Scaffold(
-        backgroundColor: theme.colorScheme.surface,
-        body: Stack(
-          children: [
-            CustomScrollView(
-              slivers: [
-                SliverAppBar(
-                  expandedHeight: size.height * 0.35,
-                  flexibleSpace: FlexibleSpaceBar(
-                    background: Stack(
-                      fit: StackFit.expand,
-                      children: [
-                        widget.course.courseImage != null
-                            ? Image.network(
-                                "https://mrvet-production.up.railway.app/${widget.course.courseImage!}",
-                                fit: BoxFit.cover,
-                                errorBuilder: (context, error, stackTrace) =>
-                                    _buildDefaultImage(),
-                              )
-                            : _buildDefaultImage(),
-                        Container(
-                          decoration: BoxDecoration(
-                            gradient: LinearGradient(
-                              begin: Alignment.bottomCenter,
-                              end: Alignment.topCenter,
-                              colors: [
-                                Colors.black.withOpacity(0.7),
-                                Colors.transparent,
-                              ],
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  pinned: true,
-                  leading: IconButton(
-                    icon: Container(
-                      padding: const EdgeInsets.all(6),
-                      decoration: BoxDecoration(
-                        color: Colors.black54,
-                        shape: BoxShape.circle,
-                      ),
-                      child: Icon(Icons.arrow_back, color: Colors.white),
-                    ),
-                    onPressed: () => Navigator.pop(context),
-                  ),
-                  actions: [
-                    IconButton(
-                      icon: Container(
-                        padding: const EdgeInsets.all(6),
-                        decoration: BoxDecoration(
-                          color: Colors.black54,
-                          shape: BoxShape.circle,
-                        ),
-                        child: Icon(Icons.edit, color: Colors.white),
-                      ),
-                      onPressed: () {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => EditCourseScreen(
-                                      course: widget.course,
-                                    )));
-                      },
-                    ),
-                    IconButton(
-                      icon: Container(
-                        padding: const EdgeInsets.all(6),
-                        decoration: BoxDecoration(
-                          color: Colors.black54,
-                          shape: BoxShape.circle,
-                        ),
-                        child: Icon(Icons.delete, color: Colors.white),
-                      ),
-                      onPressed: () => _showDeleteConfirmation(context),
-                    ),
-                  ],
-                ),
-                SliverToBoxAdapter(
-                  child: Padding(
-                    padding: const EdgeInsets.all(20.0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Expanded(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    widget.course.title,
-                                    style:
-                                        theme.textTheme.headlineSmall?.copyWith(
-                                      fontWeight: FontWeight.bold,
-                                      color: theme.colorScheme.onSurface,
-                                    ),
-                                  ).animate().fadeIn(delay: 100.ms),
-                                  const Gap(8),
-                                  Wrap(
-                                    spacing: 8,
-                                    children: [
-                                      Chip(
-                                        backgroundColor:
-                                            theme.colorScheme.primaryContainer,
-                                        label: Text(
-                                          '4.8 ★',
-                                          style: TextStyle(
-                                              color: theme.colorScheme
-                                                  .onPrimaryContainer),
-                                        ),
-                                        avatar: Icon(Icons.star,
-                                            size: 16,
-                                            color: theme.colorScheme
-                                                .onPrimaryContainer),
-                                      ),
-                                      Chip(
-                                        backgroundColor: theme
-                                            .colorScheme.secondaryContainer,
-                                        label: Text(
-                                          "course.hours".tr(args: ['12']),
-                                          style: TextStyle(
-                                              color: theme.colorScheme
-                                                  .onSecondaryContainer),
-                                        ),
-                                        avatar: Icon(Icons.timer_outlined,
-                                            size: 16,
-                                            color: theme.colorScheme
-                                                .onSecondaryContainer),
-                                      ),
-                                    ],
-                                  ),
-                                ],
-                              ),
-                            ),
-                            Container(
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: 16, vertical: 8),
-                              decoration: BoxDecoration(
-                                gradient: LinearGradient(
-                                  colors: [
-                                    Colors.amber.shade600,
-                                    Colors.orange,
-                                  ],
-                                ),
-                                borderRadius: BorderRadius.circular(24),
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: Colors.amber.withOpacity(0.3),
-                                    blurRadius: 8,
-                                    spreadRadius: 2,
-                                  ),
-                                ],
-                              ),
-                              child: Text(
-                                "${widget.course.price} \$",
-                                style: const TextStyle(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 16,
-                                ),
-                              ),
-                            )
-                                .animate(
-                                    onPlay: (controller) => controller.repeat())
-                                .shimmer(duration: 2000.ms),
-                          ],
-                        ),
-                        const Gap(24),
-                        InkWell(
-                          onTap: () =>
-                              setState(() => _isExpanded = !_isExpanded),
-                          child: AnimatedContainer(
-                            duration: const Duration(milliseconds: 300),
+    return Scaffold(
+      body: BlocListener<InstructorCoursesCubit, CourseState>(
+        listener: (context, state) {
+          if (state is DeleteCourseSuccess) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text("course.delete_success".tr()),
+                backgroundColor: Colors.green,
+              ),
+            );
+            Navigator.push(context,
+                MaterialPageRoute(builder: (context) => InsHomeScreen()));
+          }
+          if (state is DeleteCoursefiled) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text("course.delete_failed".tr()),
+                backgroundColor: Colors.red,
+              ),
+            );
+          }
+        },
+        child: Scaffold(
+          backgroundColor: theme.colorScheme.surface,
+          body: Stack(
+            children: [
+              CustomScrollView(
+                slivers: [
+                  SliverAppBar(
+                    expandedHeight: size.height * 0.35,
+                    flexibleSpace: FlexibleSpaceBar(
+                      background: Stack(
+                        fit: StackFit.expand,
+                        children: [
+                          widget.course.courseImage != null
+                              ? Image.network(
+                                  "https://mrvet-production.up.railway.app/${widget.course.courseImage!}",
+                                  fit: BoxFit.cover,
+                                  errorBuilder: (context, error, stackTrace) =>
+                                      _buildDefaultImage(),
+                                )
+                              : _buildDefaultImage(),
+                          Container(
                             decoration: BoxDecoration(
-                              border: Border(
-                                left: BorderSide(
-                                  color: theme.colorScheme.primary,
-                                  width: 3,
-                                ),
+                              gradient: LinearGradient(
+                                begin: Alignment.bottomCenter,
+                                end: Alignment.topCenter,
+                                colors: [
+                                  Colors.black.withOpacity(0.7),
+                                  Colors.transparent,
+                                ],
                               ),
-                            ),
-                            padding: const EdgeInsets.only(left: 12),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Row(
-                                  children: [
-                                    Text(
-                                      "course.description".tr(),
-                                      style:
-                                          theme.textTheme.titleMedium?.copyWith(
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                    const Spacer(),
-                                    Icon(
-                                      _isExpanded
-                                          ? Icons.expand_less
-                                          : Icons.expand_more,
-                                      color: theme.colorScheme.primary,
-                                    ),
-                                  ],
-                                ),
-                                AnimatedCrossFade(
-                                  firstChild: Text(
-                                    widget.course.description ??
-                                        "course.no_description".tr(),
-                                    style: theme.textTheme.bodyMedium,
-                                    maxLines: 3,
-                                    overflow: TextOverflow.ellipsis,
-                                  ),
-                                  secondChild: Text(
-                                    widget.course.description ??
-                                        "course.no_description".tr(),
-                                    style: theme.textTheme.bodyMedium,
-                                  ),
-                                  crossFadeState: _isExpanded
-                                      ? CrossFadeState.showSecond
-                                      : CrossFadeState.showFirst,
-                                  duration: const Duration(milliseconds: 200),
-                                ),
-                              ],
                             ),
                           ),
-                        ),
-                        const Gap(24),
-                      ],
+                        ],
+                      ),
                     ),
-                  ),
-                ),
-              ],
-            ),
-            Positioned(
-              bottom: 20,
-              left: 20,
-              right: 20,
-              child: Column(
-                children: [
-                  Row(
-                    children: [
-                      _buildActionCard(
-                        context,
-                        icon: Icons.play_circle_fill,
-                        label: "course.videos".tr(),
-                        subtitle: "course.videos_count".tr(args: ['12']),
-                        color: Colors.blue,
-                        onTap: () {
+                    pinned: true,
+                    leading: IconButton(
+                      icon: Container(
+                        padding: const EdgeInsets.all(6),
+                        decoration: BoxDecoration(
+                          color: Colors.black54,
+                          shape: BoxShape.circle,
+                        ),
+                        child: Icon(Icons.arrow_back, color: Colors.white),
+                      ),
+                      onPressed: () => Navigator.pop(context),
+                    ),
+                    actions: [
+                      IconButton(
+                        icon: Container(
+                          padding: const EdgeInsets.all(6),
+                          decoration: BoxDecoration(
+                            color: Colors.black54,
+                            shape: BoxShape.circle,
+                          ),
+                          child: Icon(Icons.edit, color: Colors.white),
+                        ),
+                        onPressed: () {
                           Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => VideosScreen(
-                                courseId: widget.course.id,
-                                courseTitle: widget.course.title,
-                              ),
-                            ),
-                          );
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => EditCourseScreen(
+                                        course: widget.course,
+                                      )));
                         },
                       ),
-                      const Gap(12),
-                      _buildActionCard(
-                        context,
-                        icon: Icons.article,
-                        label: "course.materials".tr(),
-                        subtitle: 'Tap to show ',
-                        color: Colors.purple,
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => MaterialsScreen(
-                                courseId: widget.course.id,
-                              ),
-                            ),
-                          );
-                        },
+                      IconButton(
+                        icon: Container(
+                          padding: const EdgeInsets.all(6),
+                          decoration: BoxDecoration(
+                            color: Colors.black54,
+                            shape: BoxShape.circle,
+                          ),
+                          child: Icon(Icons.delete, color: Colors.white),
+                        ),
+                        onPressed: () => _showDeleteConfirmation(context),
                       ),
                     ],
                   ),
+                  SliverToBoxAdapter(
+                    child: Padding(
+                      padding: const EdgeInsets.all(20.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      widget.course.title,
+                                      style: theme.textTheme.headlineSmall
+                                          ?.copyWith(
+                                        fontWeight: FontWeight.bold,
+                                        color: theme.colorScheme.onSurface,
+                                      ),
+                                    ).animate().fadeIn(delay: 100.ms),
+                                    const Gap(8),
+                                    Wrap(
+                                      spacing: 8,
+                                      children: [
+                                        Chip(
+                                          backgroundColor: theme
+                                              .colorScheme.primaryContainer,
+                                          label: Text(
+                                            '4.8 ★',
+                                            style: TextStyle(
+                                                color: theme.colorScheme
+                                                    .onPrimaryContainer),
+                                          ),
+                                          avatar: Icon(Icons.star,
+                                              size: 16,
+                                              color: theme.colorScheme
+                                                  .onPrimaryContainer),
+                                        ),
+                                        Chip(
+                                          backgroundColor: theme
+                                              .colorScheme.secondaryContainer,
+                                          label: Text(
+                                            "course.hours".tr(args: ['12']),
+                                            style: TextStyle(
+                                                color: theme.colorScheme
+                                                    .onSecondaryContainer),
+                                          ),
+                                          avatar: Icon(Icons.timer_outlined,
+                                              size: 16,
+                                              color: theme.colorScheme
+                                                  .onSecondaryContainer),
+                                        ),
+                                      ],
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              Container(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 16, vertical: 8),
+                                decoration: BoxDecoration(
+                                  gradient: LinearGradient(
+                                    colors: [
+                                      Colors.amber.shade600,
+                                      Colors.orange,
+                                    ],
+                                  ),
+                                  borderRadius: BorderRadius.circular(24),
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: Colors.amber.withOpacity(0.3),
+                                      blurRadius: 8,
+                                      spreadRadius: 2,
+                                    ),
+                                  ],
+                                ),
+                                child: Text(
+                                  "${widget.course.price} \$",
+                                  style: const TextStyle(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 16,
+                                  ),
+                                ),
+                              )
+                                  .animate(
+                                      onPlay: (controller) =>
+                                          controller.repeat())
+                                  .shimmer(duration: 2000.ms),
+                            ],
+                          ),
+                          const Gap(24),
+                          InkWell(
+                            onTap: () =>
+                                setState(() => _isExpanded = !_isExpanded),
+                            child: AnimatedContainer(
+                              duration: const Duration(milliseconds: 300),
+                              decoration: BoxDecoration(
+                                border: Border(
+                                  left: BorderSide(
+                                    color: theme.colorScheme.primary,
+                                    width: 3,
+                                  ),
+                                ),
+                              ),
+                              padding: const EdgeInsets.only(left: 12),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Row(
+                                    children: [
+                                      Text(
+                                        "course.description".tr(),
+                                        style: theme.textTheme.titleMedium
+                                            ?.copyWith(
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                      const Spacer(),
+                                      Icon(
+                                        _isExpanded
+                                            ? Icons.expand_less
+                                            : Icons.expand_more,
+                                        color: theme.colorScheme.primary,
+                                      ),
+                                    ],
+                                  ),
+                                  AnimatedCrossFade(
+                                    firstChild: Text(
+                                      widget.course.description ??
+                                          "course.no_description".tr(),
+                                      style: theme.textTheme.bodyMedium,
+                                      maxLines: 3,
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
+                                    secondChild: Text(
+                                      widget.course.description ??
+                                          "course.no_description".tr(),
+                                      style: theme.textTheme.bodyMedium,
+                                    ),
+                                    crossFadeState: _isExpanded
+                                        ? CrossFadeState.showSecond
+                                        : CrossFadeState.showFirst,
+                                    duration: const Duration(milliseconds: 200),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                          const Gap(24),
+                        ],
+                      ),
+                    ),
+                  ),
                 ],
               ),
-            ),
-            Positioned(
-              bottom: 100,
-              right: 20,
-              child: FloatingActionButton.extended(
-                onPressed: () {
-                  _showAddContentMenu(context);
-                },
-                backgroundColor: theme.colorScheme.primary,
-                foregroundColor: theme.colorScheme.onPrimary,
-                elevation: 4,
-                icon: Icon(Icons.add),
-                label: Text("course.add_content".tr()),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(16),
+              Positioned(
+                bottom: 20,
+                left: 20,
+                right: 20,
+                child: Column(
+                  children: [
+                    Row(
+                      children: [
+                        _buildActionCard(
+                          context,
+                          icon: Icons.play_circle_fill,
+                          label: "course.videos".tr(),
+                          subtitle: "course.videos_count".tr(args: ['12']),
+                          color: Colors.blue,
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => VideosScreen(
+                                  courseId: widget.course.id,
+                                  courseTitle: widget.course.title,
+                                ),
+                              ),
+                            );
+                          },
+                        ),
+                        const Gap(12),
+                        _buildActionCard(
+                          context,
+                          icon: Icons.article,
+                          label: "course.materials".tr(),
+                          subtitle: 'Tap to show ',
+                          color: Colors.purple,
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => MaterialsScreen(
+                                  courseId: widget.course.id,
+                                ),
+                              ),
+                            );
+                          },
+                        ),
+                      ],
+                    ),
+                  ],
                 ),
-              ).animate().scale(delay: 300.ms),
-            ),
-          ],
+              ),
+              Positioned(
+                bottom: 100,
+                right: 20,
+                child: FloatingActionButton.extended(
+                  onPressed: () {
+                    _showAddContentMenu(context);
+                  },
+                  backgroundColor: theme.colorScheme.primary,
+                  foregroundColor: theme.colorScheme.onPrimary,
+                  elevation: 4,
+                  icon: Icon(Icons.add),
+                  label: Text("course.add_content".tr()),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(16),
+                  ),
+                ).animate().scale(delay: 300.ms),
+              ),
+            ],
+          ),
         ),
       ),
     );

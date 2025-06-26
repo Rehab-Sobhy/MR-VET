@@ -1,10 +1,9 @@
 import 'package:easy_localization/easy_localization.dart';
-import 'package:education_app/settings/cubitofUser.dart';
-import 'package:education_app/settings/statesofuser.dart';
-import 'package:education_app/student/courseDescription.dart';
-import 'package:education_app/student/subsecription.dart';
+import 'package:education_app/student/enrolledcourse.dart';
+import 'package:education_app/student/subsercriptions_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:education_app/student/courseDescription.dart';
 
 class Subsecribtionwidget extends StatefulWidget {
   const Subsecribtionwidget({super.key});
@@ -17,23 +16,22 @@ class _SubsecribtionwidgetState extends State<Subsecribtionwidget> {
   @override
   void initState() {
     super.initState();
-
-    context.read<ProfileCubit>().fetchUserProfile();
+    context.read<EnrolledCoursesCubit>().fetchEnrolledCourses();
   }
 
   @override
   Widget build(BuildContext context) {
-    return BlocConsumer<ProfileCubit, ProfileState>(
-      listener: (context, state) {},
+    return BlocBuilder<EnrolledCoursesCubit, EnrolledCoursesState>(
       builder: (context, state) {
-        if (state is ProfileLoading) {
-          return const Center();
-        } else if (state is ProfileLoaded) {
-          final courses = context.read<ProfileCubit>().enrolledCourses;
+        if (state is EnrolledCoursesLoading) {
+          return const SizedBox(
+              height: 150, child: Center(child: CircularProgressIndicator()));
+        } else if (state is EnrolledCoursesSuccess) {
+          final courses = state.courses;
 
           if (courses.isEmpty) {
             return Padding(
-              padding: EdgeInsets.all(16.0),
+              padding: const EdgeInsets.all(16.0),
               child: Center(child: Text('noSubsecriptionsYet'.tr())),
             );
           }
@@ -48,28 +46,16 @@ class _SubsecribtionwidgetState extends State<Subsecribtionwidget> {
                     Text(
                       'Subsicription'.tr(),
                       style: const TextStyle(
-                        fontSize: 18,
+                        fontSize: 17,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
                     const Spacer(),
-                    TextButton(
-                      onPressed: () {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => Subsecriptions()));
-                      },
-                      child: Text(
-                        'see_all'.tr(),
-                        style: const TextStyle(color: Colors.blue),
-                      ),
-                    ),
                   ],
                 ),
               ),
               SizedBox(
-                height: 200,
+                height: 150,
                 child: ListView.builder(
                   scrollDirection: Axis.horizontal,
                   padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -77,7 +63,7 @@ class _SubsecribtionwidgetState extends State<Subsecribtionwidget> {
                   itemBuilder: (context, index) {
                     final course = courses[index];
                     return Container(
-                      width: 280,
+                      width: 150,
                       margin: const EdgeInsets.only(right: 16),
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(16),
@@ -97,7 +83,7 @@ class _SubsecribtionwidgetState extends State<Subsecribtionwidget> {
                             context,
                             MaterialPageRoute(
                               builder: (_) =>
-                                  CourseDetailsScreen(course: course),
+                                  StudentCourseDetailsScreen(course: course),
                             ),
                           );
                         },
@@ -116,9 +102,8 @@ class _SubsecribtionwidgetState extends State<Subsecribtionwidget> {
                                         errorBuilder:
                                             (context, error, stackTrace) =>
                                                 Image.asset(
-                                          "assets/images/noimage.jpg",
-                                          fit: BoxFit.cover,
-                                        ),
+                                                    "assets/images/noimage.jpg",
+                                                    fit: BoxFit.cover),
                                       )
                                     : Image.asset(
                                         "assets/images/noimage.jpg",
@@ -147,7 +132,7 @@ class _SubsecribtionwidgetState extends State<Subsecribtionwidget> {
                                       const SizedBox(width: 4),
                                       const Spacer(),
                                       Text(
-                                        "${course.price} \$",
+                                        "${course.price} \LE",
                                         style: const TextStyle(
                                           color: Colors.green,
                                           fontWeight: FontWeight.bold,
@@ -167,8 +152,8 @@ class _SubsecribtionwidgetState extends State<Subsecribtionwidget> {
               ),
             ],
           );
-        } else if (state is ProfileError) {
-          return Center(child: Text(state.message));
+        } else if (state is EnrolledCoursesFailure) {
+          return Center(child: Text(state.error));
         } else {
           return const SizedBox.shrink();
         }

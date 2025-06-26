@@ -226,7 +226,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
   Future<void> _handleLogout() async {
     try {
-      await _authService.logout();
+      await _authService.logout(context);
       if (!mounted) return;
       Navigator.push(
           context, MaterialPageRoute(builder: (context) => LoginScreen()));

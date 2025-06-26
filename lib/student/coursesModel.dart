@@ -23,15 +23,15 @@ class CourseModel {
 
   factory CourseModel.fromJson(Map<String, dynamic> json) {
     return CourseModel(
-      id: json['_id'],
-      title: json['title'],
-      description: json['description'],
-      price: json['price'],
-      category: json['category'],
+      id: json['_id'] ?? '',
+      title: json['title'] ?? '',
+      description: json['description'] ?? '',
+      price: json['price'] ?? 0,
+      category: json['category'] ?? '', // لأن الحقل مفقود في الـ JSON
       courseImage: json['courseImage'],
-      instructor: json['instructor'],
-      createdAt: DateTime.parse(json['createdAt']),
-      updatedAt: DateTime.parse(json['updatedAt']),
+      instructor: json['instructor'] ?? '',
+      createdAt: DateTime.tryParse(json['createdAt'] ?? '') ?? DateTime.now(),
+      updatedAt: DateTime.tryParse(json['updatedAt'] ?? '') ?? DateTime.now(),
     );
   }
 }
